@@ -1,4 +1,4 @@
-# Project Structure Guide
+# Project Structure Convention
 
 How to lay out a software project and its GitHub repository, so that every project looks the same to the people who read it and to the tools that build, release and list it.
 
