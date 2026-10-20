@@ -1,9 +1,11 @@
 # Example project.yml for a command-line tool. Placeholder names; see project--example.yml for every field.
 type: cli
-display_name: Pumpkin Timer CLI
-short_name: pumpkin
 identifier: com.johndoe.pumpkintimer
-summary: A command-line countdown timer for carving pumpkins.
+short_name: pumpkin
+display_name:
+  en: Pumpkin Timer CLI
+summary:
+  en: A command-line countdown timer for carving pumpkins.
 keywords:
   - cli
   - timer
@@ -18,6 +20,10 @@ default_language: en
 url: https://johndoe.example/pumpkin-timer
 support: https://github.com/johndoe/pumpkin-timer/issues
 documentation: https://github.com/johndoe/pumpkin-timer#readme
+runtime:
+  - node >=24
+  - bun
+data_collected: none
 team:
   - name: John Doe
     roles:
@@ -29,10 +35,6 @@ platforms:
   macos:
     min_version: "13.0"
   linux:
-runtime:
-  - node >=24
-  - bun
 distribution:
   - npm
   - github-releases
-data_collected: none

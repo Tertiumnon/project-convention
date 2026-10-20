@@ -14,6 +14,8 @@
 - Doc projects: `audience`, `entry_point` and `formats` fields, a `content/` check and `project--example--guide.yml`.
 - Checker: compliance requirements for mobile apps, iOS settings defaults (`sku`, `copyright`) written to `settings.json`, and `--check-files` for image existence and size.
 - Store limits: the confirmed and unconfirmed values are listed in the README.
+- Flat manifest: fields sit at the top level, with no `app:` parent. Text fields (`display_name`, `summary`, `description`) are language maps.
+- Store text comes from the app fields. `store:` holds only overrides, such as iOS `subtitle`, `keywords` and `promotional_text`.
 - Store text is keyed by field, then language (`store.description.fr`), so each text is written once.
 - `scripts/manifest/manifest.ts`: checks `project.yml` against the convention and writes store text in the Fastlane layout.
 - `team` in `project.yml`: people with roles (`owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`) and the languages translators work on. Replaces `author` and `maintainers`.

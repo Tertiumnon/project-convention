@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 type FileSpec = [string, number];
-type Store = Record<string, Record<string, string>>;
+type Text = Record<string, string>; // language tag -> text
 type Permission = { name: string; reason: string };
 // Every platform uses the same keys. A platform without settings is written as `web:`.
 type PlatformConfig = {
@@ -24,25 +24,47 @@ type Compliance = {
   target_audience?: string[];
   data_safety?: Record<string, unknown>;
 };
-type Manifest = {
+type App = {
   type?: string;
-  display_name?: string;
-  summary?: string;
   identifier?: string;
+  short_name?: string;
+  status?: string;
+  display_name?: Text;
+  summary?: Text;
+  description?: Text;
+  keywords?: string[];
+  categories?: string[];
+  languages?: string[];
+  default_language?: string;
+  rtl_languages?: string[];
+  code_languages?: string[];
+  url?: string;
+  documentation?: string;
+  support?: string;
+  funding?: string;
+  privacy_policy?: string;
+  terms_of_service?: string;
+  runtime?: string[];
+  frameworks?: string[];
   icon?: string;
   social_card?: string;
   screenshots?: string[];
-  languages?: string[];
-  default_language?: string;
-  platforms?: Record<string, PlatformConfig>;
-  team?: { name: string; roles: string[] }[];
+  video?: string;
   data_collected?: string | string[];
-  privacy_policy?: string;
-  store?: Store;
-  compliance?: Compliance;
+  age_rating?: string;
+  accessibility?: string;
   audience?: string[];
   entry_point?: string;
   formats?: string[];
+};
+type Manifest = App & {
+  team?: { name: string; roles: string[] }[];
+  platforms?: Record<string, PlatformConfig>;
+  distribution?: string[];
+  environments?: string[];
+  // Overrides only. Title, description and short description come from app when not given here.
+  store?: Record<string, Text>;
+  compliance?: Compliance;
 };
 
 const installedPlatforms = ['android', 'ios', 'windows', 'macos', 'linux', 'chromium', 'firefox'];
@@ -73,24 +95,62 @@ const requiredFields: Record<string, string[]> = {
   ios: ['title', 'description'],
 };
 
+const appOf = (m: Manifest): App => m;
+const languagesOf = (m: Manifest): string[] => appOf(m).languages ?? [];
+const mobilePlatforms = (m: Manifest): string[] => Object.keys(m.platforms ?? {}).filter(p => p in platformFiles);
+const ownerName = (m: Manifest): string => m.team?.find(person => person.roles.includes('owner'))?.name ?? '';
+
+// The text a store shows: the store's own override, or the app's text in the same language.
+const storeText = (m: Manifest, field: string, language: string): string | undefined => {
+  const override = m.store?.[field]?.[language];
+  if (override) return override;
+  const app = appOf(m);
+  const derived: Record<string, Text | undefined> = { title: app.display_name, description: app.description, short_description: app.summary };
+  return derived[field]?.[language];
+};
+
 const requiredErrors = (m: Manifest): string[] => {
+  const app = appOf(m);
   const errors: string[] = [];
-  if (!m.type) errors.push('type is required');
-  if (!m.display_name) errors.push('display_name is required');
-  if (!m.summary) errors.push('summary is required');
-  else if (m.summary.length > 120) errors.push('summary is longer than 120 characters');
-  if (!m.languages?.length) errors.push('languages is required');
-  else if (!m.languages.includes(m.default_language ?? '')) errors.push('default_language must be one of languages');
+  const languages = languagesOf(m);
+  if (!app.type) errors.push('type is required');
+  if (!app.display_name) errors.push('display_name is required');
+  if (!app.summary) errors.push('summary is required');
+  if (languages.length === 0) errors.push('languages is required');
+  else if (!languages.includes(app.default_language ?? '')) errors.push('default_language must be one of languages');
+  for (const language of languages) {
+    if (!app.display_name?.[language]) errors.push(`display_name.${language} is missing`);
+    if (!app.summary?.[language]) errors.push(`summary.${language} is missing`);
+  }
   if (Object.keys(m.platforms ?? {}).length === 0) errors.push('platforms is required');
   if (!m.team?.some(person => person.roles.includes('owner'))) errors.push('team needs one person with the owner role');
   return errors;
 };
 
+// Every language key in app text and store overrides must be a language of the app.
+const unknownLanguageErrors = (m: Manifest): string[] => {
+  const errors: string[] = [];
+  const languages = languagesOf(m);
+  const app = appOf(m);
+  for (const field of ['display_name', 'summary', 'description'] as const) {
+    for (const language of Object.keys(app[field] ?? {})) {
+      if (!languages.includes(language)) errors.push(`${field}.${language} is not in languages`);
+    }
+  }
+  for (const [field, texts] of Object.entries(m.store ?? {})) {
+    for (const language of Object.keys(texts)) {
+      if (!languages.includes(language)) errors.push(`store.${field}.${language} is not in languages`);
+    }
+  }
+  return errors;
+};
+
 const platformErrors = (m: Manifest): string[] => {
+  const app = appOf(m);
   const errors: string[] = [];
   const platforms = m.platforms ?? {};
   const names = Object.keys(platforms);
-  if (names.some(p => installedPlatforms.includes(p)) && !m.identifier) errors.push('identifier is required for installed platforms');
+  if (names.some(p => installedPlatforms.includes(p)) && !app.identifier) errors.push('identifier is required for installed platforms');
   if (names.includes('android') && !platforms.android?.min_version) errors.push('platforms.android.min_version is required for android');
   if (names.includes('ios') && !platforms.ios?.min_version) errors.push('platforms.ios.min_version is required for ios');
   for (const [name, config] of Object.entries(platforms)) {
@@ -98,9 +158,9 @@ const platformErrors = (m: Manifest): string[] => {
       if (!permission.name || !permission.reason) errors.push(`platforms.${name}.permissions needs a name and a reason`);
     }
   }
-  const collected = [m.data_collected ?? 'none'].flat();
+  const collected = [app.data_collected ?? 'none'].flat();
   const mobile = names.includes('android') || names.includes('ios');
-  if ((collected.some(c => c !== 'none') || mobile) && !m.privacy_policy) errors.push('privacy_policy is required for this project');
+  if ((collected.some(c => c !== 'none') || mobile) && !app.privacy_policy) errors.push('privacy_policy is required for this project');
   return errors;
 };
 
@@ -126,34 +186,22 @@ const docTypes = ['guide', 'cookbook', 'style-guide', 'conventions', 'agreement'
 
 // Doc projects keep their text in content/, and their entry point must exist there.
 const docErrors = (m: Manifest, root: string): string[] => {
-  if (!docTypes.includes(m.type ?? '')) return [];
+  const app = appOf(m);
+  if (!docTypes.includes(app.type ?? '')) return [];
   const errors: string[] = [];
-  if (!m.audience?.length) errors.push('audience is required for doc projects');
-  if (!m.entry_point) errors.push('entry_point is required for doc projects');
-  else if (!existsSync(join(root, m.entry_point))) errors.push(`entry_point ${m.entry_point} does not exist`);
+  if (!app.audience?.length) errors.push('audience is required for doc projects');
+  if (!app.entry_point) errors.push('entry_point is required for doc projects');
+  else if (!existsSync(join(root, app.entry_point))) errors.push(`entry_point ${app.entry_point} does not exist`);
   if (!existsSync(join(root, 'content'))) errors.push('content/ folder is required for doc projects');
-  return errors;
-};
-
-const mobilePlatforms = (m: Manifest): string[] => Object.keys(m.platforms ?? {}).filter(p => p in platformFiles);
-
-const unknownLanguageErrors = (m: Manifest): string[] => {
-  const errors: string[] = [];
-  for (const [field, texts] of Object.entries(m.store ?? {})) {
-    for (const language of Object.keys(texts)) {
-      if (!m.languages?.includes(language)) errors.push(`store.${field}.${language} is not in languages`);
-    }
-  }
   return errors;
 };
 
 const missingErrors = (m: Manifest): string[] => {
   const errors: string[] = [];
-  const store = m.store ?? {};
   for (const platform of mobilePlatforms(m)) {
     for (const field of requiredFields[platform]) {
-      for (const language of m.languages ?? []) {
-        if (!store[field]?.[language]) errors.push(`store.${field}.${language} is missing (${platform})`);
+      for (const language of languagesOf(m)) {
+        if (!storeText(m, field, language)) errors.push(`store text ${field}.${language} is missing (${platform})`);
       }
     }
   }
@@ -163,13 +211,16 @@ const missingErrors = (m: Manifest): string[] => {
 const lengthErrors = (m: Manifest): string[] => {
   const errors: string[] = [];
   for (const platform of mobilePlatforms(m)) {
-    for (const [field, texts] of Object.entries(m.store ?? {})) {
-      const limit = platformFiles[platform][field]?.[1];
-      if (!limit) continue;
-      for (const [language, text] of Object.entries(texts)) {
-        if (text.length > limit) errors.push(`store.${field}.${language} is longer than ${limit} characters (${platform})`);
+    for (const [field, [, limit]] of Object.entries(platformFiles[platform])) {
+      for (const language of languagesOf(m)) {
+        const text = storeText(m, field, language);
+        if (text && text.length > limit) errors.push(`store text ${field}.${language} is longer than ${limit} characters (${platform})`);
       }
     }
+  }
+  const summaryLimit = 120;
+  for (const [language, text] of Object.entries(appOf(m).summary ?? {})) {
+    if (text.length > summaryLimit) errors.push(`summary.${language} is longer than ${summaryLimit} characters`);
   }
   return errors;
 };
@@ -178,25 +229,22 @@ const lengthErrors = (m: Manifest): string[] => {
 const resolvedSettings = (m: Manifest, platform: string): Record<string, unknown> => {
   const settings: Record<string, unknown> = { ...(m.platforms?.[platform]?.settings ?? {}) };
   if (platform === 'ios') {
-    if (settings.sku === undefined) settings.sku = m.identifier;
+    if (settings.sku === undefined) settings.sku = appOf(m).identifier;
     if (settings.copyright === undefined) settings.copyright = `© ${new Date().getFullYear()} ${ownerName(m)}`;
   }
   return settings;
 };
 
-const ownerName = (m: Manifest): string => m.team?.find(person => person.roles.includes('owner'))?.name ?? '';
-
 const writeMetadata = (m: Manifest, outDir: string): void => {
   for (const platform of mobilePlatforms(m)) {
     mkdirSync(join(outDir, platform), { recursive: true });
     writeFileSync(join(outDir, platform, 'settings.json'), `${JSON.stringify(resolvedSettings(m, platform), null, 2)}\n`);
-    for (const language of m.languages ?? []) {
+    for (const language of languagesOf(m)) {
       const dir = join(outDir, platform, language);
       mkdirSync(dir, { recursive: true });
-      for (const [field, texts] of Object.entries(m.store ?? {})) {
-        const spec = platformFiles[platform][field];
-        const text = texts[language];
-        if (spec && text) writeFileSync(join(dir, spec[0]), `${text}\n`);
+      for (const [field, [file]] of Object.entries(platformFiles[platform])) {
+        const text = storeText(m, field, language);
+        if (text) writeFileSync(join(dir, file), `${text}\n`);
       }
     }
   }
@@ -222,15 +270,16 @@ const imageErrors = (root: string, path: string, rule: SizeRule): string[] => {
 };
 
 const screenshotPaths = (m: Manifest): string[] => [
-  ...(m.screenshots ?? []),
+  ...(appOf(m).screenshots ?? []),
   ...Object.values(m.platforms ?? {}).flatMap(config => Object.values(config?.screenshots ?? {}).flat()),
 ];
 
 const fileErrors = (m: Manifest, root: string): string[] => {
+  const app = appOf(m);
   const errors: string[] = [];
   const iconRule: SizeRule = Object.keys(m.platforms ?? {}).includes('ios') ? { min: 1024 } : { min: 512 };
-  if (m.icon) errors.push(...imageErrors(root, m.icon, iconRule));
-  if (m.social_card) errors.push(...imageErrors(root, m.social_card, { exact: [1200, 630] }));
+  if (app.icon) errors.push(...imageErrors(root, app.icon, iconRule));
+  if (app.social_card) errors.push(...imageErrors(root, app.social_card, { exact: [1200, 630] }));
   for (const path of screenshotPaths(m)) errors.push(...imageErrors(root, path, {}));
   const feature = m.platforms?.android?.settings?.feature_graphic;
   if (typeof feature === 'string') errors.push(...imageErrors(root, feature, { exact: [1024, 500] }));
@@ -248,9 +297,9 @@ const manifest = Bun.YAML.parse(readFileSync(file, 'utf8')) as Manifest;
 const root = dirname(file);
 const errors = [
   ...requiredErrors(manifest),
+  ...unknownLanguageErrors(manifest),
   ...platformErrors(manifest),
   ...complianceErrors(manifest),
-  ...unknownLanguageErrors(manifest),
   ...missingErrors(manifest),
   ...lengthErrors(manifest),
   ...docErrors(manifest, root),

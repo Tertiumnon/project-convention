@@ -137,20 +137,23 @@ Required means required for every project unless the type notes below say otherw
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
-| `display_name` | yes | The name people see: README title, site title, app name. See Names. |
 | `identifier` | yes, for installed platforms | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the Android application ID and the iOS bundle ID. |
-| `short_name` | no | One short word for tight spaces such as home screens and command lines. |
-| `summary` | yes | One sentence, up to 120 characters. Same text as the GitHub description. |
+| `display_name` | yes | Map of language to the name people see. It is the store title and the README title. |
+| `short_name` | no | One short word for tight spaces. For a CLI, the command name. |
+| `summary` | yes | Map of language to one sentence, up to 120 characters. The default language is the GitHub description. It is the Android short description. |
+| `description` | for stores | Map of language to the long text. It is the store description. |
 | `keywords` | no | Search keywords, lowercase. |
-| `categories` | no | Store and catalogue categories, lowercase, for example `entertainment`, `developer-tools`, `productivity`. |
+| `categories` | no | Store and catalogue categories, lowercase, for example `entertainment`, `developer-tools`. |
 | `status` | no | `alpha`, `beta`, `stable`, `maintenance` or `archived`. |
 | `language` | no | Set only when GitHub's detected language is wrong, for example `Markdown` for documentation repositories. |
+
+Text fields are language maps: one key per language, the same keys as `languages`. A project with one language still writes it as a map, for example `display_name: { en: Pumpkin Timer }`.
 
 #### Languages
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `languages` | yes, when the project has a user interface or product documentation | BCP 47 tags of every language the project is written in for its readers, for example `en`, `pt-BR`. |
+| `languages` | yes, when the project has a user interface or product documentation | BCP 47 tags of every language the project is written in, for example `en`, `pt-BR`. |
 | `default_language` | yes, when `languages` is set | Used when a reader's language is not in the list. |
 | `rtl_languages` | no | The subset of `languages` written right to left. |
 | `code_languages` | no | Programming languages the project is written in, for example `TypeScript`. These are not spoken languages. |
@@ -159,11 +162,11 @@ Required means required for every project unless the type notes below say otherw
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `url` | web apps with a site | Public home page. Omit when there is none. Absolute `https` URL. |
+| `url` | web apps with a site | Public home page. Absolute `https` URL. Omit when there is none. |
 | `documentation` | no | Documentation URL. |
 | `support` | no | Where people ask for help: issue tracker, forum or contact page. |
 | `funding` | no | Donation or sponsorship URL. |
-| `privacy_policy` | yes, when `data_collected` is not `none`, and for stores | Absolute URL. |
+| `privacy_policy` | yes, when `data_collected` is not `none`, and for Android and iOS | Absolute URL. |
 | `terms_of_service` | no | Absolute URL. |
 
 Prefer a URL over an email address in the repository.
@@ -180,11 +183,10 @@ Prefer a URL over an email address in the repository.
 - Do not put email addresses in `team`. Use `github` or `url` as the contact.
 - Names in examples are placeholders. Real people replace them.
 
-#### Platforms and runtime
+#### Technology
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms` | yes | Map of the platforms the project runs on: `web`, `windows`, `macos`, `linux`, `android`, `ios`, `chromium`, `firefox`, `vscode`, `telegram`. Each platform holds its own settings, for example `platforms.android.min_sdk`. A platform without settings is written as `web:` with nothing after it. |
 | `runtime` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. |
 | `frameworks` | no | Frameworks the project is built with, by name, for example `Angular`, `React`, `SolidJS`. |
 
@@ -192,7 +194,7 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `icon` | yes | Path to the square icon, at least 512 by 512 pixels. |
+| `icon` | yes | Path to the square icon, at least 512 by 512 pixels. 1024 by 1024 when iOS is a platform. |
 | `social_card` | web apps | Path to the share image, 1200 by 630 pixels. Served as `/social-card.png` (see Web app). |
 | `screenshots` | no | Paths to screenshots in display order, from `docs/screenshots/`. |
 | `video` | no | URL of a demonstration video. |
@@ -259,33 +261,32 @@ The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/
 
 #### Store listing
 
-`store` holds the listing text. It has one entry per store field, and each field has one text per language in `languages`. A description is written once per language under its field, never repeated as a separate entry.
+Store text is taken from the app fields. A store entry is written only when a store needs different text. Store overrides go under `store`, one entry per field, each with a language map.
+
+| Store text | Taken from | Android file | iOS file | Limit (characters) |
+| --- | --- | --- | --- | --- |
+| `title` | `display_name` | `title.txt` | `name.txt` | 30 (Play title not confirmed) |
+| `short_description` | `summary` | `short_description.txt` | not used | 80 |
+| `description` | `description` | `full_description.txt` | `description.txt` | 4000 |
+| `subtitle` | `store.subtitle` only | not used | `subtitle.txt` | 30 |
+| `keywords` | `store.keywords` only | not used | `keywords.txt` | 100 (bytes or characters not confirmed) |
+| `promotional_text` | `store.promotional_text` only | not used | `promotional_text.txt` | 170 |
+| `release_notes` | `store.release_notes` only | `release_notes.txt` | `release_notes.txt` | 500 on Android, 4000 on iOS (not confirmed) |
 
 ```yaml
+display_name:
+  en: Pumpkin Timer
+  fr: Minuteur Citrouille
 store:
-  title:
-    en: Pumpkin Timer
-    fr: Minuteur Citrouille
-  description:
-    en: Count down to carving time.
-    fr: Compte à rebours jusqu'à la sculpture.
+  subtitle:
+    en: Halloween countdown timer
 ```
 
-| Field | Android file | iOS file | Limit (characters) |
-| --- | --- | --- | --- |
-| `title` | `title.txt` | `name.txt` | 30 |
-| `short_description` | `short_description.txt` | not used | 80 |
-| `subtitle` | not used | `subtitle.txt` | 30 |
-| `keywords` | not used | `keywords.txt` | 100, comma-separated |
-| `promotional_text` | not used | `promotional_text.txt` | 170 |
-| `description` | `full_description.txt` | `description.txt` | 4000 |
-| `release_notes` | `release_notes.txt` | `release_notes.txt` | 500 on Android, 4000 on iOS |
-
-- Every language in `languages` needs a `title` and a `description` for every mobile platform. Android also needs a `short_description`.
-- A language that is not in `languages` is an error, so the store texts and the interface languages always match.
-- Confirmed against the stores' own pages when this section was written: Google Play short description 80 and full description 4000; App Store name 30, subtitle 30, description 4000 and promotional text 170.
-- Not confirmed: the Google Play title (30 in third-party guides, 50 in one), the release-notes limits, and the iOS keywords limit (100, given as bytes in one source and characters in another). The checker uses the values listed above, so confirm these in the consoles before a submission.
-- The script writes these files into `metadata/<platform>/<language>/`.
+- Every language in `languages` needs a `display_name`, a `summary`, and a `description` for every mobile platform.
+- A store override naming a language that is not in `languages` is an error.
+- Confirmed against the stores' own pages: Google Play short description 80 and full description 4000; App Store name 30, subtitle 30, description 4000 and promotional text 170.
+- Not confirmed: the Google Play title (30 in third-party guides, 50 in one), the release-notes limits, and the iOS keywords limit (100, given as bytes in one source and characters in another). Confirm these in the consoles before a submission.
+- The script writes these files into `metadata/<platform>/<language>/`, and `settings.json` for each platform with its defaults applied.
 
 #### Compliance
 
@@ -302,11 +303,11 @@ Answers that the store forms ask for, so they are filled in from this file and k
 
 #### Type notes
 
-- **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: [web]`.
-- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `store` for every language, `platforms.android` and `platforms.ios` settings for the platforms it ships to, `privacy_policy` and `compliance`.
+- **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: web`.
+- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `display_name`, `summary`, `description`, `privacy_policy`, and `compliance`. Each platform in `platforms` has its `min_version`.
 - **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
 - **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
-- **Doc projects**: require `languages`, `default_language`, `audience`, `entry_point` (inside `content/`, which must exist) and `platforms` (usually `web`).
+- **Doc projects** (`guide`, `cookbook`, `style-guide`, `conventions`, `agreement`): require `languages`, `default_language`, `audience`, `entry_point` (inside `content/`, which must exist) and `platforms` (usually `web`).
 
 #### What reads the manifest
 
@@ -316,7 +317,7 @@ Answers that the store forms ask for, so they are filled in from this file and k
 | Page metadata and JSON-LD | `display_name`, `summary`, `url`, `languages`, `default_language`, `social_card`, `license` from `package.json` |
 | Language switcher | `languages`, `default_language`, `rtl_languages` |
 | Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
-| Store metadata (`metadata/`, written by `scripts/manifest`) | `store`, `languages`, `platforms.android`, `platforms.ios`, `privacy_policy` |
+| Store metadata (`metadata/`, written by `scripts/manifest`) | `display_name`, `summary`, `description`, `store`, `languages`, `platforms`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
 
 ### Repository metadata

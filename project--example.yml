@@ -1,26 +1,35 @@
 # Complete project.yml: every field the convention defines, with placeholder values.
-# Real projects keep only the fields that apply to them. Fields that package.json holds
-# (version, license, repository, engines) are not repeated here. Names are placeholders.
-# Platform-specific examples: project--example--<platform>.yml
+# Real projects keep only the fields that apply to them. package.json holds version, license,
+# repository and engines, so they are not repeated here. Names are placeholders.
+# Platform examples: project--example--<platform>.yml
 
-# ── Identity ──────────────────────────────────────────────────────────────
+# ── App ───────────────────────────────────────────────────────────────────
+# Everything that describes the app. Text fields are language maps: one key per language.
 type: web-app
-display_name: Hallowentine
+identifier: com.tertium.hallowentine   # installed platforms only; reverse-DNS
 short_name: Hallowentine
-identifier: com.tertium.hallowentine
-summary: Create and share personalized Halloween greeting cards.
+status: stable
 keywords:
   - halloween
   - greeting cards
-  - cards
-  - invitations
 categories:
   - entertainment
   - social
-status: stable
-# language: TypeScript   # only when GitHub's detected language is wrong
+display_name:
+  en: Hallowentine
+  fr: Hallowentine
+summary:                               # up to 120 characters; the GitHub description
+  en: Create and share personalized Halloween greeting cards.
+  fr: Créez et partagez des cartes d'Halloween personnalisées.
+description:                           # long text; store descriptions come from here
+  en: |
+    Hallowentine turns a short message into a Halloween card you can share as a link.
+    Choose a mood, write a message, and send it to a friend.
+  fr: |
+    Hallowentine transforme un court message en carte d'Halloween à partager par lien.
+    Choisissez une ambiance, écrivez un message et envoyez-le à un ami.
+# language: TypeScript               # only when GitHub's detected language is wrong
 
-# ── Languages ─────────────────────────────────────────────────────────────
 languages:
   - en
   - fr
@@ -29,13 +38,34 @@ rtl_languages: []
 code_languages:
   - TypeScript
 
-# ── Links ─────────────────────────────────────────────────────────────────
 url: https://halloweentine.tiii.dev
 documentation: https://github.com/Tertiumnon/halloweentine-www#readme
 support: https://github.com/Tertiumnon/halloweentine-www/issues
 funding: https://johndoe.example/support
 privacy_policy: https://johndoe.example/privacy
 terms_of_service: https://johndoe.example/terms
+
+runtime:
+  - node >=24
+  - bun
+frameworks:
+  - SolidJS
+
+icon: assets/logo/logo.png
+social_card: public/social-card.png
+screenshots:
+  - docs/screenshots/01-home.png
+  - docs/screenshots/02-card.png
+video: https://johndoe.example/hallowentine-demo
+
+data_collected: none
+age_rating: everyone
+accessibility: WCAG 2.2 AA             # only when tested
+
+# Doc projects only (guide, cookbook, style-guide, conventions, agreement):
+# audience: [developers]
+# entry_point: content/README.md
+# formats: [markdown, html, pdf]
 
 # ── People ────────────────────────────────────────────────────────────────
 # Placeholder names. Real people replace them. No email addresses.
@@ -62,11 +92,6 @@ team:
       - reviewer
     url: https://johndoe.example/alex
 
-# ── Doc projects only (guide, cookbook, style-guide, conventions, agreement) ──
-# audience: [developers]
-# entry_point: content/README.md
-# formats: [markdown, html, pdf]
-
 # ── Platforms ─────────────────────────────────────────────────────────────
 # Every platform uses the same keys: min_version, identifier, permissions, screenshots,
 # distribution, settings. Other platform ids: windows, macos, linux, chromium, firefox,
@@ -74,7 +99,6 @@ team:
 platforms:
   android:
     min_version: 26
-    identifier: com.tertium.hallowentine
     permissions:
       - name: android.permission.INTERNET
         reason: Loads the card a sender shared.
@@ -95,7 +119,6 @@ platforms:
       feature_graphic: assets/store/android/feature-graphic.png
   ios:
     min_version: "16.0"
-    identifier: com.tertium.hallowentine
     permissions: []
     screenshots:
       iphone_6_9:
@@ -112,29 +135,18 @@ platforms:
       copyright: "© 2026 Tertium"
   web:
 
-runtime:
-  - node >=24
-  - bun
-frameworks:
-  - SolidJS
+distribution:
+  - web
+  - google-play
+  - app-store
+environments:
+  - dev
+  - prod
 
-# ── Media ─────────────────────────────────────────────────────────────────
-icon: assets/logo/logo.png
-social_card: public/social-card.png
-screenshots:
-  - docs/screenshots/01-home.png
-  - docs/screenshots/02-card.png
-video: https://johndoe.example/hallowentine-demo
-
-# ── Store listing text ───────────────────────────────────────────────────
-# One entry per store field. Each field has one text per language in languages.
+# ── Store overrides ───────────────────────────────────────────────────────
+# Title, description and short description come from app. Give a value here only when a
+# store needs different text. Keys are store fields; values are language maps.
 store:
-  title:
-    en: Hallowentine
-    fr: Hallowentine
-  short_description:
-    en: Create and share Halloween greeting cards.
-    fr: Créez et partagez des cartes d'Halloween.
   subtitle:
     en: Halloween greeting cards
     fr: Cartes d'Halloween
@@ -144,30 +156,11 @@ store:
   promotional_text:
     en: Make someone's Halloween a little more personal.
     fr: Rendez l'Halloween de quelqu'un un peu plus personnel.
-  description:
-    en: |
-      Hallowentine turns a short message into a Halloween card you can share as a link.
-      Choose a mood, write a message, and send it to a friend.
-    fr: |
-      Hallowentine transforme un court message en carte d'Halloween à partager par lien.
-      Choisissez une ambiance, écrivez un message et envoyez-le à un ami.
   release_notes:
     en: First release.
     fr: Première version.
 
-# ── Distribution ──────────────────────────────────────────────────────────
-distribution:
-  - web
-  - google-play
-  - app-store
-environments:
-  - dev
-  - prod
-
-# ── Privacy and content ───────────────────────────────────────────────────
-data_collected: none
-age_rating: everyone
-accessibility: WCAG 2.2 AA
+# ── Compliance ────────────────────────────────────────────────────────────
 compliance:
   pricing: free
   export_compliance:

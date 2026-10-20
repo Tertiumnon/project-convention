@@ -1,12 +1,16 @@
 # Example project.yml for a Linux desktop app. Placeholder names; see project--example.yml for every field.
 type: desktop-app
-display_name: Pumpkin Timer
 identifier: com.johndoe.pumpkintimer
-summary: A countdown timer for carving pumpkins, for Linux.
+display_name:
+  en: Pumpkin Timer
+summary:
+  en: A countdown timer for carving pumpkins, for Linux.
 languages:
   - en
 default_language: en
 url: https://johndoe.example/pumpkin-timer
+icon: assets/logo/logo.png
+data_collected: none
 team:
   - name: John Doe
     roles:
@@ -23,5 +27,3 @@ platforms:
       package_formats:
         - AppImage
         - flatpak
-icon: assets/logo/logo.png
-data_collected: none

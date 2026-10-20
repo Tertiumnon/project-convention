@@ -1,19 +1,14 @@
 # Example project.yml for a web app. Placeholder names; see project--example.yml for every field.
 type: web-app
-display_name: Pumpkin Timer
 identifier: com.johndoe.pumpkintimer
-summary: A countdown timer for carving pumpkins, in the browser.
+display_name:
+  en: Pumpkin Timer
+summary:
+  en: A countdown timer for carving pumpkins, in the browser.
 languages:
   - en
 default_language: en
 url: https://pumpkin-timer.johndoe.example
-team:
-  - name: John Doe
-    roles:
-      - owner
-      - developer
-platforms:
-  web:
 icon: assets/logo/logo.png
 social_card: public/social-card.png
 runtime:
@@ -21,8 +16,15 @@ runtime:
   - bun
 frameworks:
   - SolidJS
+data_collected: none
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+platforms:
+  web:
 distribution:
   - web
 environments:
   - prod
-data_collected: none

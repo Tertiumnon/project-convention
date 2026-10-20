@@ -1,12 +1,16 @@
 # Example project.yml for a VS Code extension. Placeholder names; see project--example.yml for every field.
 type: vscode-extension
-display_name: Pumpkin Timer
 identifier: com.johndoe.pumpkintimer
-summary: A countdown timer for carving pumpkins, inside VS Code.
+display_name:
+  en: Pumpkin Timer
+summary:
+  en: A countdown timer for carving pumpkins, inside VS Code.
 languages:
   - en
 default_language: en
 url: https://johndoe.example/pumpkin-timer
+icon: assets/logo/logo.png
+data_collected: none
 team:
   - name: John Doe
     roles:
@@ -16,5 +20,3 @@ platforms:
   vscode:
     settings:
       publisher: johndoe
-icon: assets/logo/logo.png
-data_collected: none
