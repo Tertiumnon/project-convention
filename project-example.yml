@@ -35,8 +35,28 @@ url: https://halloweentine.tiii.dev
 support: https://github.com/Tertiumnon/halloweentine-www/issues
 
 # ── People ────────────────────────────────────────────────────────────────
-author:
-  name: Tertium
+# Placeholder names. Real people replace them. No email addresses.
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+    github: johndoe
+  - name: Jane Doe
+    roles:
+      - designer
+      - translator
+    github: janedoe
+    languages:
+      - fr
+      - de
+  - name: Alex Doe
+    roles:
+      - translator
+      - reviewer
+    languages:
+      - es
+      - pt-BR
 
 # ── Platforms and runtime ─────────────────────────────────────────────────
 platforms:

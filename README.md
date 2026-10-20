@@ -170,8 +170,13 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `author` | yes | `name` and, optionally, `url`. |
-| `maintainers` | no | List of people in the same form as `author`. |
+| `team` | yes | List of people who work on the project. Each person has `name`, `roles` and optional `github` (GitHub login), `url` and `languages`. |
+| `team[].roles` | yes | One or more of: `owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`. A person may hold several roles. |
+| `team[].languages` | for translators | The languages the person translates into, as BCP 47 tags from `languages`. |
+
+- The `owner` is the person `author` in `package.json` names.
+- Do not put email addresses in `team`. Use `github` or `url` as the contact.
+- Names in examples are placeholders. Real people replace them.
 
 #### Platforms and runtime
 
