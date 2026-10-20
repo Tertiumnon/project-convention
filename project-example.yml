@@ -60,7 +60,7 @@ team:
 
 # ── Platforms and runtime ─────────────────────────────────────────────────
 platforms:
-  - web
+  web:
 runtime:
   - node >=24
   - bun

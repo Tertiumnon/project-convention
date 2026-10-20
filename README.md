@@ -184,7 +184,7 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms` | yes | Where the project runs: `web`, `windows`, `macos`, `linux`, `android`, `ios`, `chromium`, `firefox`, `vscode`, `telegram`. |
+| `platforms` | yes | Map of the platforms the project runs on: `web`, `windows`, `macos`, `linux`, `android`, `ios`, `chromium`, `firefox`, `vscode`, `telegram`. Each platform holds its own settings, for example `platforms.android.min_sdk`. A platform without settings is written as `web:` with nothing after it. |
 | `runtime` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. |
 | `frameworks` | no | Frameworks the project is built with, by name, for example `Angular`, `React`, `SolidJS`. |
 
@@ -218,13 +218,13 @@ Used by `mobile-app` projects that ship to Google Play.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `android.min_sdk` | yes | Lowest Android API level the app runs on. |
-| `android.target_sdk` | no | API level the app is built for. Raised when the store requires a newer one. |
-| `android.version_code` | yes | Integer that increases with every upload to the store. |
-| `android.category` | no | Google Play category, for example `TOOLS`. |
-| `android.permissions` | no | List of `name` and `reason`. Each permission needs a reason the store shows to users. |
-| `android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. Paths from `docs/screenshots/`. |
-| `android.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
+| `platforms.android.min_sdk` | yes | Lowest Android API level the app runs on. |
+| `platforms.android.target_sdk` | no | API level the app is built for. Raised when the store requires a newer one. |
+| `platforms.android.version_code` | yes | Integer that increases with every upload to the store. |
+| `platforms.android.category` | no | Google Play category, for example `TOOLS`. |
+| `platforms.android.permissions` | no | List of `name` and `reason`. Each permission needs a reason the store shows to users. |
+| `platforms.android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. Paths from `docs/screenshots/`. |
+| `platforms.android.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
 
 #### iOS
 
@@ -232,13 +232,13 @@ Used by `mobile-app` projects that ship to the App Store.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `ios.min_os` | yes | Lowest iOS version the app runs on, for example `"16.0"`. |
-| `ios.sku` | yes | Identifier the developer chooses for App Store Connect. Not shown to users. |
-| `ios.primary_category` | yes | App Store category, for example `Utilities`. |
-| `ios.secondary_category` | no | Second App Store category. |
-| `ios.copyright` | yes | Copyright line, for example `© 2026 John Doe`. |
-| `ios.usage_descriptions` | when the app asks for a permission | Map of the `Info.plist` key to the reason shown to users. Empty when the app asks for nothing. |
-| `ios.screenshots` | yes | Device classes, for example `iphone_6_9` and `ipad_13`, each with paths from `docs/screenshots/`. |
+| `platforms.ios.min_os` | yes | Lowest iOS version the app runs on, for example `"16.0"`. |
+| `platforms.ios.sku` | yes | Identifier the developer chooses for App Store Connect. Not shown to users. |
+| `platforms.ios.primary_category` | yes | App Store category, for example `Utilities`. |
+| `platforms.ios.secondary_category` | no | Second App Store category. |
+| `platforms.ios.copyright` | yes | Copyright line, for example `© 2026 John Doe`. |
+| `platforms.ios.usage_descriptions` | when the app asks for a permission | Map of the `Info.plist` key to the reason shown to users. Empty when the app asks for nothing. |
+| `platforms.ios.screenshots` | yes | Device classes, for example `iphone_6_9` and `ipad_13`, each with paths from `docs/screenshots/`. |
 
 The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/`.
 
@@ -287,7 +287,7 @@ Answers that the store forms ask for, so they are filled in from this file and k
 #### Type notes
 
 - **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: [web]`.
-- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `store` for every language, `android` and `ios` blocks for the platforms it ships to, `privacy_policy` and `compliance`.
+- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `store` for every language, `platforms.android` and `platforms.ios` settings for the platforms it ships to, `privacy_policy` and `compliance`.
 - **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
 - **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
 - **Doc projects**: require `languages` and `default_language`.
@@ -300,7 +300,7 @@ Answers that the store forms ask for, so they are filled in from this file and k
 | Page metadata and JSON-LD | `display_name`, `summary`, `url`, `languages`, `default_language`, `social_card`, `license` from `package.json` |
 | Language switcher | `languages`, `default_language`, `rtl_languages` |
 | Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
-| Store metadata (`metadata/`, written by `scripts/manifest`) | `store`, `languages`, `android`, `ios`, `privacy_policy` |
+| Store metadata (`metadata/`, written by `scripts/manifest`) | `store`, `languages`, `platforms.android`, `platforms.ios`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
 
 ### Repository metadata
@@ -437,7 +437,7 @@ Rules:
 For `mobile-app`: Android and iOS apps that ship through the stores. **This section is specific to mobile apps.** A web app follows the Web app section, and a desktop app follows the Desktop app section.
 
 - `identifier` is the reverse-DNS name of the app. It is the Android application ID and the iOS bundle ID, so it never changes after the first upload.
-- The store text, screenshot paths and compliance answers are in `project.yml`, under `store`, `android`, `ios` and `compliance` (see Project attributes). Do not type them into the store forms by hand.
+- The store text, screenshot paths and compliance answers are in `project.yml`, under `store`, `platforms.android`, `platforms.ios` and `compliance` (see Project attributes). Do not type them into the store forms by hand.
 - Store builds (`.aab` for Google Play, `.ipa` for the App Store) are uploaded to the stores. They are not attached to the GitHub Release unless the project also publishes them directly.
 - Store images follow the Assets rules. Listing images go in `assets/store/android/` and `assets/store/ios/`.
 

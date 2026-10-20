@@ -6,6 +6,8 @@ import { join } from 'node:path';
 
 type FileSpec = [string, number];
 type Store = Record<string, Record<string, string>>;
+// Each platform holds its own settings, or nothing (written as `web:`).
+type PlatformConfig = { min_sdk?: number; min_os?: string; [key: string]: unknown } | null;
 type Manifest = {
   type?: string;
   display_name?: string;
@@ -13,12 +15,10 @@ type Manifest = {
   identifier?: string;
   languages?: string[];
   default_language?: string;
-  platforms?: string[];
+  platforms?: Record<string, PlatformConfig>;
   team?: { name: string; roles: string[] }[];
   data_collected?: string | string[];
   privacy_policy?: string;
-  android?: { min_sdk?: number };
-  ios?: { min_os?: string };
   store?: Store;
 };
 
@@ -56,24 +56,25 @@ const requiredErrors = (m: Manifest): string[] => {
   else if (m.summary.length > 120) errors.push('summary is longer than 120 characters');
   if (!m.languages?.length) errors.push('languages is required');
   else if (!m.languages.includes(m.default_language ?? '')) errors.push('default_language must be one of languages');
-  if (!m.platforms?.length) errors.push('platforms is required');
+  if (Object.keys(m.platforms ?? {}).length === 0) errors.push('platforms is required');
   if (!m.team?.some(person => person.roles.includes('owner'))) errors.push('team needs one person with the owner role');
   return errors;
 };
 
 const platformErrors = (m: Manifest): string[] => {
   const errors: string[] = [];
-  const platforms = m.platforms ?? [];
-  if (platforms.some(p => installedPlatforms.includes(p)) && !m.identifier) errors.push('identifier is required for installed platforms');
-  if (platforms.includes('android') && !m.android?.min_sdk) errors.push('android.min_sdk is required for android');
-  if (platforms.includes('ios') && !m.ios?.min_os) errors.push('ios.min_os is required for ios');
+  const platforms = m.platforms ?? {};
+  const names = Object.keys(platforms);
+  if (names.some(p => installedPlatforms.includes(p)) && !m.identifier) errors.push('identifier is required for installed platforms');
+  if (names.includes('android') && !platforms.android?.min_sdk) errors.push('platforms.android.min_sdk is required for android');
+  if (names.includes('ios') && !platforms.ios?.min_os) errors.push('platforms.ios.min_os is required for ios');
   const collected = [m.data_collected ?? 'none'].flat();
-  const mobile = platforms.includes('android') || platforms.includes('ios');
+  const mobile = names.includes('android') || names.includes('ios');
   if ((collected.some(c => c !== 'none') || mobile) && !m.privacy_policy) errors.push('privacy_policy is required for this project');
   return errors;
 };
 
-const mobilePlatforms = (m: Manifest): string[] => (m.platforms ?? []).filter(p => p in platformFiles);
+const mobilePlatforms = (m: Manifest): string[] => Object.keys(m.platforms ?? {}).filter(p => p in platformFiles);
 
 const unknownLanguageErrors = (m: Manifest): string[] => {
   const errors: string[] = [];

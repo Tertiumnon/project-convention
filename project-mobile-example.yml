@@ -44,50 +44,46 @@ team:
     languages:
       - fr
 
-# ── Platforms and runtime ─────────────────────────────────────────────────
+# ── Platforms ─────────────────────────────────────────────────────────────
+# Each platform holds its own settings.
 platforms:
-  - android
-  - ios
+  android:
+    min_sdk: 26
+    target_sdk: 35
+    version_code: 1
+    category: TOOLS
+    permissions:
+      - name: android.permission.VIBRATE
+        reason: Vibrates when the timer ends.
+    screenshots:
+      phone:
+        - docs/screenshots/android/01-timer.png
+        - docs/screenshots/android/02-settings.png
+      tablet_7:
+        - docs/screenshots/android/tablet-7-timer.png
+      tablet_10:
+        - docs/screenshots/android/tablet-10-timer.png
+    feature_graphic: assets/store/android/feature-graphic.png
+  ios:
+    min_os: "16.0"
+    sku: pumpkintimer-ios
+    primary_category: Utilities
+    secondary_category: Lifestyle
+    copyright: "© 2026 John Doe"
+    usage_descriptions: {}
+    screenshots:
+      iphone_6_9:
+        - docs/screenshots/ios/01-timer.png
+        - docs/screenshots/ios/02-settings.png
+      ipad_13:
+        - docs/screenshots/ios/ipad-13-timer.png
+
 runtime:
   - Kotlin
   - Swift
 
 # ── Media ─────────────────────────────────────────────────────────────────
 icon: assets/logo/logo.png
-
-# ── Android ───────────────────────────────────────────────────────────────
-android:
-  min_sdk: 26
-  target_sdk: 35
-  version_code: 1
-  category: TOOLS
-  permissions:
-    - name: android.permission.VIBRATE
-      reason: Vibrates when the timer ends.
-  screenshots:
-    phone:
-      - docs/screenshots/android/01-timer.png
-      - docs/screenshots/android/02-settings.png
-    tablet_7:
-      - docs/screenshots/android/tablet-7-timer.png
-    tablet_10:
-      - docs/screenshots/android/tablet-10-timer.png
-  feature_graphic: assets/store/android/feature-graphic.png
-
-# ── iOS ───────────────────────────────────────────────────────────────────
-ios:
-  min_os: "16.0"
-  sku: pumpkintimer-ios
-  primary_category: Utilities
-  secondary_category: Lifestyle
-  copyright: "© 2026 John Doe"
-  usage_descriptions: {}
-  screenshots:
-    iphone_6_9:
-      - docs/screenshots/ios/01-timer.png
-      - docs/screenshots/ios/02-settings.png
-    ipad_13:
-      - docs/screenshots/ios/ipad-13-timer.png
 
 # ── Store listing text ───────────────────────────────────────────────────
 # One entry per store field. Each field has one text per language in languages.
