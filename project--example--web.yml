@@ -1,4 +1,4 @@
-# Example project.yml for a web app. Placeholder names; see project--example.yml for every field.
+# Example project.yml for a web app. Placeholder names.
 type: web-app
 identifier: com.johndoe.pumpkintimer
 display_name:

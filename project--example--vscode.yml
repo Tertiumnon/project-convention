@@ -1,4 +1,4 @@
-# Example project.yml for a VS Code extension. Placeholder names; see project--example.yml for every field.
+# Example project.yml for a VS Code extension. Placeholder names.
 type: vscode-extension
 identifier: com.johndoe.pumpkintimer
 display_name:

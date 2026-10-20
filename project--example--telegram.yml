@@ -1,4 +1,4 @@
-# Example project.yml for a Telegram sticker pack. Placeholder names; see project--example.yml for every field.
+# Example project.yml for a Telegram sticker pack. Placeholder names.
 type: telegram-sticker-pack
 display_name:
   en: Pumpkin Stickers

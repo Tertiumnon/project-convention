@@ -1,7 +1,6 @@
-# Complete project.yml: every field the convention defines, with placeholder values.
+# Complete project.yml with every field, with placeholder values.
 # Real projects keep only the fields that apply to them. package.json holds version, license,
 # repository and engines, so they are not repeated here. Names are placeholders.
-# Platform examples: project--example--<platform>.yml
 
 # ── App ───────────────────────────────────────────────────────────────────
 # Everything that describes the app. Text fields are language maps: one key per language.
@@ -39,8 +38,8 @@ code_languages:
   - TypeScript
 
 url: https://halloweentine.tiii.dev
-documentation: https://github.com/Tertiumnon/halloweentine-www#readme
-support: https://github.com/Tertiumnon/halloweentine-www/issues
+documentation: https://johndoe.example/pumpkin-timer#readme
+support: https://johndoe.example/pumpkin-timer/support
 funding: https://johndoe.example/support
 privacy_policy: https://johndoe.example/privacy
 terms_of_service: https://johndoe.example/terms
