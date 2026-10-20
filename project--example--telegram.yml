@@ -1,4 +1,4 @@
-# Example project.yml for a Telegram sticker pack. Placeholder names; see project-example.yml for every field.
+# Example project.yml for a Telegram sticker pack. Placeholder names; see project--example.yml for every field.
 type: telegram-sticker-pack
 display_name: Pumpkin Stickers
 summary: Pumpkin stickers for carving season.

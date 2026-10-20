@@ -1,4 +1,4 @@
-# Example project.yml for a command-line tool. Placeholder names; see project-example.yml for every field.
+# Example project.yml for a command-line tool. Placeholder names; see project--example.yml for every field.
 type: cli
 display_name: Pumpkin Timer CLI
 short_name: pumpkin

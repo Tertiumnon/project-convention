@@ -1,5 +1,5 @@
 # Example project.yml for one desktop app built for Windows, macOS and Linux from the same code.
-# Placeholder names; see project-example.yml for every field.
+# Placeholder names; see project--example.yml for every field.
 type: desktop-app
 display_name: Pumpkin Timer
 identifier: com.johndoe.pumpkintimer
