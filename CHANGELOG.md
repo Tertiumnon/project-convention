@@ -2,6 +2,8 @@
 
 ### Added
 
+- Each platform may set its own `identifier`, which overrides the top-level one. The checker requires an identifier for each installed platform, checks reverse-DNS form for Android, iOS, Windows, macOS and Linux, and writes the identifier into each `settings.json`.
+
 - Sections per project type: Doc project, Browser extension, Web app, Desktop app. The Common section applies to all.
 - Web app: `public/` folder, its usual files (favicons, icons, `manifest.webmanifest`, `robots.txt`, share image), and the rule that missing files return a real 404.
 - Web app: `robots.txt` rules, absolute `https` URLs behind a proxy, sitemap alternates, per-language previews and JSON-LD.

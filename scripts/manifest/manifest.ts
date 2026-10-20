@@ -145,12 +145,26 @@ const unknownLanguageErrors = (m: Manifest): string[] => {
   return errors;
 };
 
+// The identifier a platform uses: its own, or the top-level one.
+const identifierFor = (m: Manifest, platform: string): string | undefined => m.platforms?.[platform]?.identifier ?? appOf(m).identifier;
+
+// Platforms whose store or OS uses the identifier as a reverse-DNS name. Chromium and Firefox
+// get their extension IDs from the store, so their identifier is not checked here.
+const storeIdentifierPlatforms = ['android', 'ios', 'windows', 'macos', 'linux'];
+const reverseDns = /^[A-Za-z][A-Za-z0-9-]*(\.[A-Za-z][A-Za-z0-9-]*)+$/;
+
 const platformErrors = (m: Manifest): string[] => {
   const app = appOf(m);
   const errors: string[] = [];
   const platforms = m.platforms ?? {};
   const names = Object.keys(platforms);
-  if (names.some(p => installedPlatforms.includes(p)) && !app.identifier) errors.push('identifier is required for installed platforms');
+  for (const name of names.filter(p => installedPlatforms.includes(p))) {
+    if (!identifierFor(m, name)) errors.push(`identifier is required for ${name} (top-level or platforms.${name}.identifier)`);
+  }
+  for (const name of names.filter(p => storeIdentifierPlatforms.includes(p))) {
+    const id = identifierFor(m, name);
+    if (id && !reverseDns.test(id)) errors.push(`platforms.${name} identifier ${id} is not reverse-DNS (for example com.example.app)`);
+  }
   if (names.includes('android') && !platforms.android?.min_version) errors.push('platforms.android.min_version is required for android');
   if (names.includes('ios') && !platforms.ios?.min_version) errors.push('platforms.ios.min_version is required for ios');
   for (const [name, config] of Object.entries(platforms)) {
@@ -227,9 +241,9 @@ const lengthErrors = (m: Manifest): string[] => {
 
 // Settings with defaults: iOS sku is the identifier, and copyright is the owner and the year.
 const resolvedSettings = (m: Manifest, platform: string): Record<string, unknown> => {
-  const settings: Record<string, unknown> = { ...(m.platforms?.[platform]?.settings ?? {}) };
+  const settings: Record<string, unknown> = { identifier: identifierFor(m, platform), ...(m.platforms?.[platform]?.settings ?? {}) };
   if (platform === 'ios') {
-    if (settings.sku === undefined) settings.sku = appOf(m).identifier;
+    if (settings.sku === undefined) settings.sku = identifierFor(m, platform);
     if (settings.copyright === undefined) settings.copyright = `© ${new Date().getFullYear()} ${ownerName(m)}`;
   }
   return settings;

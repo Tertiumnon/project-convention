@@ -137,7 +137,7 @@ Required means required for every project unless the type notes below say otherw
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
-| `identifier` | yes, for installed platforms | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the Android application ID and the iOS bundle ID. |
+| `identifier` | yes, unless every installed platform sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the default for every platform. A platform may override it with `platforms.<id>.identifier`. Use a domain the team owns. Fix it before the first store upload: Android and iOS identifiers cannot change after that. |
 | `display_name` | yes | Map of language to the name people see. It is the store title and the README title. |
 | `short_name` | no | One short word for tight spaces. For a CLI, the command name. |
 | `summary` | yes | Map of language to one sentence, up to 120 characters. The default language is the GitHub description. It is the Android short description. |
@@ -221,7 +221,7 @@ Prefer a URL over an email address in the repository.
 | Key | Required | Meaning |
 | --- | --- | --- |
 | `min_version` | yes for `android` and `ios`; optional otherwise | Lowest version the platform runs on. Android uses the API level as an integer, iOS uses the OS version as a string. The generator writes it as `minSdkVersion` (Android) or `MinimumOSVersion` (iOS). |
-| `identifier` | no | Overrides the top-level `identifier` for this platform. |
+| `identifier` | no | Overrides the top-level `identifier` for this platform. Use it when a platform needs its own ID, for example iOS bundle IDs that differ from Android, or Windows package names. Android and iOS use it as the application ID and bundle ID, and iOS uses it as the default SKU. Chromium and Firefox extension IDs come from the store, so their identifier is not checked. |
 | `permissions` | no | List of `name` and `reason`. On Android, `name` is the permission. On iOS, `name` is the `Info.plist` usage-description key. Each reason is shown to users. |
 | `screenshots` | yes for stores | Map of device class to a list of paths in `docs/screenshots/`. Device classes are listed under each platform. |
 | `distribution` | no | Stores for this platform, for example `google-play`, `app-store`. |
