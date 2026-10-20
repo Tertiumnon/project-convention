@@ -137,7 +137,7 @@ Required means required for every project unless the type notes below say otherw
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
-| `identifier` | yes, unless every installed platform sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the default for every platform. A platform may override it with `platforms.<id>.identifier`. Use a domain the team owns. Fix it before the first store upload: Android and iOS identifiers cannot change after that. |
+| `identifier` | yes, unless every installed platform sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the default for every platform. A platform may override it with `platforms.<id>.identifier`. Use a domain the team owns. Flathub checks that the domain belongs to the project, so a GitHub project uses `io.github.<owner>.<app>`. Fix it before the first store upload: Android and iOS identifiers cannot change after that. |
 | `display_name` | yes | Map of language to the name people see. It is the store title and the README title. |
 | `short_name` | no | One short word for tight spaces. For a CLI, the command name. |
 | `summary` | yes | Map of language to one sentence, up to 120 characters. The default language is the GitHub description. It is the Android short description. |
@@ -245,7 +245,7 @@ A platform with no settings is written as `web:` with nothing after it.
 | `vscode` | `publisher` (the Marketplace publisher name), `engine_vscode` (minimum VS Code version, for example `^1.90.0`). |
 | `npm` | `name` (the npm package name, when it differs from `display_name`). |
 | `linux` | `package_formats` (for example `AppImage`, `flatpak`), `runtime` (the Flatpak runtime, for example `org.freedesktop.Platform`). |
-| `windows` | `installer` (for example `msix`). |
+| `windows` | `installer` (for example `msix`). `publisher` (the certificate subject, for example `CN=Tertium`, which must match the signing certificate). The MSIX version is four parts, `Major.Minor.Build.Revision`, and the generator pads it with `.0`. |
 | `macos` | `notarized` (`true` or `false`). |
 
 #### Android
@@ -339,6 +339,20 @@ Answers that the store forms ask for, so they are filled in from this file and k
 | Store metadata (`metadata/`, written by `scripts/manifest`) | `display_name`, `summary`, `description`, `store`, `languages`, `platforms`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
 
+#### Generators
+
+`scripts/manifest/generate.ts` writes the JSON manifests from `project.yml`, with `package.json` beside it for the version, licence and repository.
+
+| Platform | Output | Notes |
+| --- | --- | --- |
+| `web` | `manifest.webmanifest` | Icon sizes are read from the PNG header. SVG icons use `any`. |
+| `chromium` | `manifest.json` (Manifest V3) | Icon `128` only. Other sizes are a build step. |
+| `firefox` | `manifest.json` | `browser_specific_settings.gecko.id` is the platform identifier. |
+| `vscode` | `package.json` | `publisher` and `engines.vscode` come from the platform settings. |
+| `npm` | `package.json` | `name` comes from the platform settings, or the package's own name. |
+
+Not generated yet: Android (`AndroidManifest.xml`, adaptive icons, `strings.xml`), iOS (`Info.plist`, asset catalogue), macOS (`Info.plist`, entitlements), Windows (`AppxManifest.xml`), and Linux (AppStream metainfo, Flatpak manifest). These formats need XML or plist writers and their own tests.
+
 #### Mapping
 
 Each row shows where a field goes in each native manifest. A generator uses this table. Each cell is written from the native documentation and must be confirmed before a generator relies on it. Empty cells mean the format has no such field.
@@ -369,6 +383,8 @@ Each row shows where a field goes in each native manifest. A generator uses this
 | `team` (owner) | | | | `author` | | publisher name | `developer` | `author` (npm) |
 | `license` | | | | | | | `project_license` | `license` |
 | `engines` | | | | | | | | `engines` (npm) |
+
+The category names in the store columns are not confirmed. Google Play's list of categories and Apple's `LSApplicationCategoryType` values for `utilities` and `social-networking` were not found in the review, so the generator's category table must be checked in each console before a release.
 
 The `version` and `license` values come from the ecosystem file (`package.json`, `manifest.json`). The build number, `versionCode`, and the MSIX four-part version are set at build time, not stored here.
 

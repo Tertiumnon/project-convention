@@ -2,6 +2,9 @@
 
 ### Added
 
+- `scripts/manifest/generate.ts`: writes the web manifest, Chromium and Firefox `manifest.json`, and VS Code and npm `package.json`. Android, iOS, macOS, Windows and Linux formats are not generated yet.
+- Windows `publisher` setting and four-part MSIX version rule. Flathub domain rule for the identifier.
+
 - Platform settings table for web manifest, extensions, VS Code, npm and Linux. Top-level `copyright`, `theme_color`, `background_color` and `deep_links`.
 - Mapping table: where each field goes in each native manifest. Confirm each cell before a generator relies on it.
 - Checker: known platform ids only, hex colours, category list, data types in `data_collected`, and permission reasons as language maps.
