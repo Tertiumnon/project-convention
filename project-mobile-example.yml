@@ -45,13 +45,11 @@ team:
       - fr
 
 # ── Platforms ─────────────────────────────────────────────────────────────
-# Each platform holds its own settings.
+# Every platform uses the same keys: min_version, identifier, permissions, screenshots,
+# distribution and settings. Settings hold what only one platform has.
 platforms:
   android:
-    min_sdk: 26
-    target_sdk: 35
-    version_code: 1
-    category: TOOLS
+    min_version: 26
     permissions:
       - name: android.permission.VIBRATE
         reason: Vibrates when the timer ends.
@@ -63,20 +61,25 @@ platforms:
         - docs/screenshots/android/tablet-7-timer.png
       tablet_10:
         - docs/screenshots/android/tablet-10-timer.png
-    feature_graphic: assets/store/android/feature-graphic.png
+    settings:
+      target_version: 35
+      version_code: 1
+      category: TOOLS
+      feature_graphic: assets/store/android/feature-graphic.png
   ios:
-    min_os: "16.0"
-    sku: pumpkintimer-ios
-    primary_category: Utilities
-    secondary_category: Lifestyle
-    copyright: "© 2026 John Doe"
-    usage_descriptions: {}
+    min_version: "16.0"
+    permissions: []
     screenshots:
       iphone_6_9:
         - docs/screenshots/ios/01-timer.png
         - docs/screenshots/ios/02-settings.png
       ipad_13:
         - docs/screenshots/ios/ipad-13-timer.png
+    settings:
+      sku: pumpkintimer-ios
+      primary_category: Utilities
+      secondary_category: Lifestyle
+      copyright: "© 2026 John Doe"
 
 runtime:
   - Kotlin

@@ -8,6 +8,8 @@
 - Browser extension: `manifest.json` and icon rules.
 - `project.yml` as the full project manifest: identity, languages, links, people, platforms, media, distribution, privacy. `project-example.yml` shows a complete web app.
 - Mobile app: `mobile-app` type, `identifier`, Android and iOS blocks, store text per language, and compliance answers. `project-mobile-example.yml` shows a complete example.
+- Universal platform keys: every platform uses `min_version`, `identifier`, `permissions`, `screenshots`, `distribution` and `settings`. `min_sdk` and `min_os` are now `min_version`. iOS usage descriptions are `permissions`.
+- Optional fields: `version_code`, `target_version`, iOS `sku` and `copyright` can be left out. The spec gives their defaults. The checker does not fill them in yet.
 - `platforms` is a map. Each platform holds its own settings (`platforms.android`, `platforms.ios`) instead of separate `android` and `ios` blocks.
 - Store text is keyed by field, then language (`store.description.fr`), so each text is written once.
 - `scripts/manifest/manifest.ts`: checks `project.yml` against the convention and writes store text in the Fastlane layout.

@@ -212,19 +212,34 @@ Prefer a URL over an email address in the repository.
 | `age_rating` | no | `everyone`, `teen` or `mature`. |
 | `accessibility` | no | The standard the project tests against, for example `WCAG 2.2 AA`. Only when tested. |
 
+#### Platforms
+
+`platforms` is a map. Each key is a platform, and every platform uses the same keys, so a generator reads any platform the same way and writes the native file for it.
+
+| Key | Required | Meaning |
+| --- | --- | --- |
+| `min_version` | yes for `android` and `ios`; optional otherwise | Lowest version the platform runs on. Android uses the API level as an integer, iOS uses the OS version as a string. The generator writes it as `minSdkVersion` (Android) or `MinimumOSVersion` (iOS). |
+| `identifier` | no | Overrides the top-level `identifier` for this platform. |
+| `permissions` | no | List of `name` and `reason`. On Android, `name` is the permission. On iOS, `name` is the `Info.plist` usage-description key. Each reason is shown to users. |
+| `screenshots` | yes for stores | Map of device class to a list of paths in `docs/screenshots/`. Device classes are listed under each platform. |
+| `distribution` | no | Stores for this platform, for example `google-play`, `app-store`. |
+| `settings` | no | Anything that only one platform has. Each platform's section lists its keys. |
+
+A platform with no settings is written as `web:` with nothing after it.
+
 #### Android
 
 Used by `mobile-app` projects that ship to Google Play.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms.android.min_sdk` | yes | Lowest Android API level the app runs on. |
-| `platforms.android.target_sdk` | no | API level the app is built for. Raised when the store requires a newer one. |
-| `platforms.android.version_code` | yes | Integer that increases with every upload to the store. |
-| `platforms.android.category` | no | Google Play category, for example `TOOLS`. |
-| `platforms.android.permissions` | no | List of `name` and `reason`. Each permission needs a reason the store shows to users. |
-| `platforms.android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. Paths from `docs/screenshots/`. |
-| `platforms.android.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
+| `platforms.android.min_version` | yes | Lowest API level the app runs on, as an integer, for example `26`. |
+| `platforms.android.permissions` | no | See Platforms. |
+| `platforms.android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. |
+| `platforms.android.settings.version_code` | no | Integer that increases with every upload. When missing, the build's version code is used. |
+| `platforms.android.settings.target_version` | no | API level the app is built for. When missing, the newest level the store accepts is used. |
+| `platforms.android.settings.category` | no | Google Play category, for example `TOOLS`. |
+| `platforms.android.settings.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
 
 #### iOS
 
@@ -232,13 +247,13 @@ Used by `mobile-app` projects that ship to the App Store.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms.ios.min_os` | yes | Lowest iOS version the app runs on, for example `"16.0"`. |
-| `platforms.ios.sku` | yes | Identifier the developer chooses for App Store Connect. Not shown to users. |
-| `platforms.ios.primary_category` | yes | App Store category, for example `Utilities`. |
-| `platforms.ios.secondary_category` | no | Second App Store category. |
-| `platforms.ios.copyright` | yes | Copyright line, for example `© 2026 John Doe`. |
-| `platforms.ios.usage_descriptions` | when the app asks for a permission | Map of the `Info.plist` key to the reason shown to users. Empty when the app asks for nothing. |
-| `platforms.ios.screenshots` | yes | Device classes, for example `iphone_6_9` and `ipad_13`, each with paths from `docs/screenshots/`. |
+| `platforms.ios.min_version` | yes | Lowest iOS version the app runs on, as a string, for example `"16.0"`. |
+| `platforms.ios.permissions` | when the app asks for a permission | Each `name` is an `Info.plist` usage-description key, for example `NSCameraUsageDescription`. |
+| `platforms.ios.screenshots` | yes | Device classes `iphone_6_9` and `ipad_13`, each with paths. |
+| `platforms.ios.settings.sku` | no | Identifier for App Store Connect. When missing, the top-level `identifier` is used. |
+| `platforms.ios.settings.primary_category` | yes | App Store category, for example `Utilities`. |
+| `platforms.ios.settings.secondary_category` | no | Second App Store category. |
+| `platforms.ios.settings.copyright` | no | Copyright line. When missing, the owner's name and the current year are used. |
 
 The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/`.
 

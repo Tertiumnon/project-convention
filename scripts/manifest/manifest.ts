@@ -6,8 +6,16 @@ import { join } from 'node:path';
 
 type FileSpec = [string, number];
 type Store = Record<string, Record<string, string>>;
-// Each platform holds its own settings, or nothing (written as `web:`).
-type PlatformConfig = { min_sdk?: number; min_os?: string; [key: string]: unknown } | null;
+// Every platform uses the same keys. A platform without settings is written as `web:`.
+type Permission = { name: string; reason: string };
+type PlatformConfig = {
+  min_version?: string | number;
+  identifier?: string;
+  permissions?: Permission[];
+  screenshots?: Record<string, string[]>;
+  distribution?: string[];
+  settings?: Record<string, unknown>;
+} | null;
 type Manifest = {
   type?: string;
   display_name?: string;
@@ -66,8 +74,13 @@ const platformErrors = (m: Manifest): string[] => {
   const platforms = m.platforms ?? {};
   const names = Object.keys(platforms);
   if (names.some(p => installedPlatforms.includes(p)) && !m.identifier) errors.push('identifier is required for installed platforms');
-  if (names.includes('android') && !platforms.android?.min_sdk) errors.push('platforms.android.min_sdk is required for android');
-  if (names.includes('ios') && !platforms.ios?.min_os) errors.push('platforms.ios.min_os is required for ios');
+  if (names.includes('android') && !platforms.android?.min_version) errors.push('platforms.android.min_version is required for android');
+  if (names.includes('ios') && !platforms.ios?.min_version) errors.push('platforms.ios.min_version is required for ios');
+  for (const [name, config] of Object.entries(platforms)) {
+    for (const permission of config?.permissions ?? []) {
+      if (!permission.name || !permission.reason) errors.push(`platforms.${name}.permissions needs a name and a reason`);
+    }
+  }
   const collected = [m.data_collected ?? 'none'].flat();
   const mobile = names.includes('android') || names.includes('ios');
   if ((collected.some(c => c !== 'none') || mobile) && !m.privacy_policy) errors.push('privacy_policy is required for this project');
