@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Added
+
+- Sections per project type: Doc project, Browser extension, Web app, Desktop app. The Common section applies to all.
+- Web app: `public/` folder, its usual files (favicons, icons, `manifest.webmanifest`, `robots.txt`, share image), and the rule that missing files return a real 404.
+- Web app: `robots.txt` rules, absolute `https` URLs behind a proxy, sitemap alternates, per-language previews and JSON-LD.
+- Browser extension: `manifest.json` and icon rules.
+
+### Changed
+
+- Store listing rules moved from Common to the Desktop app section.
+- `content/` is listed for doc projects only.
+
 ## 1.2.0
 
 ### Added
