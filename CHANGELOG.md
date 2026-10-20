@@ -12,6 +12,8 @@
 - Optional fields: `version_code`, `target_version`, iOS `sku` and `copyright` can be left out. The spec gives their defaults. The checker does not fill them in yet.
 - `platforms` is a map. Each platform holds its own settings (`platforms.android`, `platforms.ios`) instead of separate `android` and `ios` blocks.
 - Doc projects: `audience`, `entry_point` and `formats` fields, a `content/` check and `project--example--guide.yml`.
+- Checker: compliance requirements for mobile apps, iOS settings defaults (`sku`, `copyright`) written to `settings.json`, and `--check-files` for image existence and size.
+- Store limits: the confirmed and unconfirmed values are listed in the README.
 - Store text is keyed by field, then language (`store.description.fr`), so each text is written once.
 - `scripts/manifest/manifest.ts`: checks `project.yml` against the convention and writes store text in the Fastlane layout.
 - `team` in `project.yml`: people with roles (`owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`) and the languages translators work on. Replaces `author` and `maintainers`.

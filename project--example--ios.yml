@@ -55,6 +55,9 @@ data_collected: none
 age_rating: everyone
 compliance:
   pricing: free
+  content_rating:
+    violence: none
+    user_generated_content: no
   export_compliance:
     uses_encryption: false
   target_audience:

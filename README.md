@@ -128,7 +128,7 @@ Projects with a `package.json` expose the same commands:
 
 Facts that the ecosystem's manifest already holds are not repeated in `project.yml`. These are `version` and `license` in `package.json` (or `manifest.json` for extensions), `repository` in `package.json`, and `engines` in `package.json`. Tools read them from there, and the two files must agree. The repository itself provides `CHANGELOG.md` and `SECURITY.md`.
 
-Tools read the file with a YAML parser. `scripts/manifest/manifest.ts` checks the file against this section and writes the store text per language in the Fastlane layout (`bun scripts/manifest/manifest.ts project.yml <out-dir>`). It lists every problem and exits with an error when a required field is missing or a text is too long. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
+Tools read the file with a YAML parser. `scripts/manifest/manifest.ts` checks the file against this section and writes the store text per language in the Fastlane layout (`bun scripts/manifest/manifest.ts project.yml <out-dir>`). It lists every problem and exits with an error when a required field is missing, a text is too long, or a compliance answer is missing. With `--check-files`, it also checks that the icon, share image, screenshots and feature graphic exist and have the right size. The iOS `settings.json` gets its defaults: `sku` is the identifier, and `copyright` is the owner and the current year. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
 
 Required means required for every project unless the type notes below say otherwise.
 
@@ -283,12 +283,13 @@ store:
 
 - Every language in `languages` needs a `title` and a `description` for every mobile platform. Android also needs a `short_description`.
 - A language that is not in `languages` is an error, so the store texts and the interface languages always match.
-- The limits are the store rules when this section was written. Check them before a submission.
+- Confirmed against the stores' own pages when this section was written: Google Play short description 80 and full description 4000; App Store name 30, subtitle 30, description 4000 and promotional text 170.
+- Not confirmed: the Google Play title (30 in third-party guides, 50 in one), the release-notes limits, and the iOS keywords limit (100, given as bytes in one source and characters in another). The checker uses the values listed above, so confirm these in the consoles before a submission.
 - The script writes these files into `metadata/<platform>/<language>/`.
 
 #### Compliance
 
-Answers that the store forms ask for, so they are filled in from this file and kept in one place.
+Answers that the store forms ask for, so they are filled in from this file and kept in one place. The checker requires `pricing` and `content_rating` for every mobile app, `target_audience` and `data_safety` for Android, and `export_compliance.uses_encryption` for iOS.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
