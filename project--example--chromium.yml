@@ -22,3 +22,6 @@ platforms:
       - chrome-web-store
     settings:
       manifest_version: 3
+      minimum_chrome_version: "120"
+      host_permissions:
+        - https://pumpkin-timer.johndoe.example/*

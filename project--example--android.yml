@@ -30,7 +30,8 @@ platforms:
     min_version: 26
     permissions:
       - name: android.permission.VIBRATE
-        reason: Vibrates when the timer ends.
+        reason:
+          en: Vibrates when the timer ends.
     screenshots:
       phone:
         - docs/screenshots/android/01-timer.png

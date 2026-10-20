@@ -10,8 +10,10 @@ languages:
 default_language: en
 url: https://pumpkin-timer.johndoe.example
 icon: assets/logo/logo.png
+theme_color: "#17120f"
+background_color: "#17120f"
 social_card: public/social-card.png
-runtime:
+engines:
   - node >=24
   - bun
 frameworks:
@@ -24,6 +26,9 @@ team:
       - developer
 platforms:
   web:
+    settings:
+      start_url: /
+      display: standalone
 distribution:
   - web
 environments:

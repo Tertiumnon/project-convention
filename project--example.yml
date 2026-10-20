@@ -45,13 +45,22 @@ funding: https://johndoe.example/support
 privacy_policy: https://johndoe.example/privacy
 terms_of_service: https://johndoe.example/terms
 
-runtime:
+engines:
   - node >=24
   - bun
 frameworks:
   - SolidJS
 
 icon: assets/logo/logo.png
+theme_color: "#17120f"
+background_color: "#17120f"
+copyright: "© 2026 Tertium"
+deep_links:
+  scheme: hallowentine
+  hosts:
+    - halloweentine.tiii.dev
+  paths:
+    - /card
 social_card: public/social-card.png
 screenshots:
   - docs/screenshots/01-home.png
@@ -101,7 +110,8 @@ platforms:
     min_version: 26
     permissions:
       - name: android.permission.INTERNET
-        reason: Loads the card a sender shared.
+        reason:
+          en: Loads the card a sender shared.
     screenshots:
       phone:
         - docs/screenshots/android/01-home.png

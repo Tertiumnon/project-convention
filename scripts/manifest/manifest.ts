@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 
 type FileSpec = [string, number];
 type Text = Record<string, string>; // language tag -> text
-type Permission = { name: string; reason: string };
+type Permission = { name: string; reason: Text };
 // Every platform uses the same keys. A platform without settings is written as `web:`.
 type PlatformConfig = {
   min_version?: string | number;
@@ -44,19 +44,24 @@ type App = {
   funding?: string;
   privacy_policy?: string;
   terms_of_service?: string;
-  runtime?: string[];
+  engines?: string[];
   frameworks?: string[];
+  theme_color?: string;
+  background_color?: string;
+  copyright?: string;
+  deep_links?: { scheme?: string; hosts?: string[]; paths?: string[] };
   icon?: string;
   social_card?: string;
   screenshots?: string[];
   video?: string;
-  data_collected?: string | string[];
+  data_collected?: string | DataItem[] | string[];
   age_rating?: string;
   accessibility?: string;
   audience?: string[];
   entry_point?: string;
   formats?: string[];
 };
+type DataItem = { type: string; purposes?: string[]; linked?: boolean; tracking?: boolean };
 type Manifest = App & {
   team?: { name: string; roles: string[] }[];
   platforms?: Record<string, PlatformConfig>;
@@ -68,6 +73,10 @@ type Manifest = App & {
 };
 
 const installedPlatforms = ['android', 'ios', 'windows', 'macos', 'linux', 'chromium', 'firefox'];
+const allowedPlatforms = ['android', 'ios', 'web', 'windows', 'macos', 'linux', 'chromium', 'firefox', 'vscode', 'telegram', 'npm'];
+const categoryVocabulary = ['entertainment', 'games', 'lifestyle', 'productivity', 'social', 'utilities', 'developer-tools', 'education', 'health', 'music', 'photo', 'travel', 'finance', 'news', 'sports', 'shopping', 'business', 'reference'];
+const dataTypes = ['contact', 'location', 'identifiers', 'usage', 'diagnostics', 'content', 'health', 'financial', 'search', 'browsing', 'other'];
+const displayModes = ['standalone', 'fullscreen', 'minimal-ui', 'browser'];
 
 // Store fields, the file each one becomes, and the length limit in characters.
 // Confirmed against the store's own pages: Play short description 80 and full description 4000,
@@ -169,8 +178,20 @@ const platformErrors = (m: Manifest): string[] => {
   if (names.includes('ios') && !platforms.ios?.min_version) errors.push('platforms.ios.min_version is required for ios');
   for (const [name, config] of Object.entries(platforms)) {
     for (const permission of config?.permissions ?? []) {
-      if (!permission.name || !permission.reason) errors.push(`platforms.${name}.permissions needs a name and a reason`);
+      if (!permission.name || !permission.reason || typeof permission.reason !== 'object') errors.push(`platforms.${name}.permissions needs a name and a reason map (one text per language)`);
     }
+  }
+  for (const name of names.filter(p => !allowedPlatforms.includes(p))) errors.push(`platforms.${name} is not a known platform`);
+  if (platforms.web?.settings?.display && !displayModes.includes(String(platforms.web.settings.display))) errors.push(`platforms.web.settings.display must be one of ${displayModes.join(', ')}`);
+  for (const field of ['theme_color', 'background_color'] as const) {
+    const value = appOf(m)[field];
+    if (value && !/^#[0-9A-Fa-f]{6}$/.test(value)) errors.push(`${field} must be a hex colour such as #17120f`);
+  }
+  for (const category of appOf(m).categories ?? []) {
+    if (!categoryVocabulary.includes(category)) errors.push(`categories: ${category} is not in the category list`);
+  }
+  for (const item of [appOf(m).data_collected ?? 'none'].flat()) {
+    if (typeof item === 'object' && !dataTypes.includes(item.type)) errors.push(`data_collected: ${item.type} is not a data type (${dataTypes.join(', ')})`);
   }
   const collected = [app.data_collected ?? 'none'].flat();
   const mobile = names.includes('android') || names.includes('ios');

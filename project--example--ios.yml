@@ -30,7 +30,8 @@ platforms:
     min_version: "16.0"
     permissions:
       - name: NSPhotoLibraryAddUsageDescription
-        reason: Saves a picture of your carved pumpkin to Photos.
+        reason:
+          en: Saves a picture of your carved pumpkin to Photos.
     screenshots:
       iphone_6_9:
         - docs/screenshots/ios/01-timer.png

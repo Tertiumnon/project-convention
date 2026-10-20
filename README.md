@@ -143,8 +143,9 @@ Required means required for every project unless the type notes below say otherw
 | `summary` | yes | Map of language to one sentence, up to 120 characters. The default language is the GitHub description. It is the Android short description. |
 | `description` | for stores | Map of language to the long text. It is the store description. |
 | `keywords` | no | Search keywords, lowercase. |
-| `categories` | no | Store and catalogue categories, lowercase, for example `entertainment`, `developer-tools`. |
+| `categories` | no | One or more of: `entertainment`, `games`, `lifestyle`, `productivity`, `social`, `utilities`, `developer-tools`, `education`, `health`, `music`, `photo`, `travel`, `finance`, `news`, `sports`, `shopping`, `business`, `reference`. Each store's own list is in Mapping. |
 | `status` | no | `alpha`, `beta`, `stable`, `maintenance` or `archived`. |
+| `copyright` | no | Copyright line, for example `© 2026 Tertium`. Used by iOS, macOS and Windows. Not localized. |
 | `language` | no | Set only when GitHub's detected language is wrong, for example `Markdown` for documentation repositories. |
 
 Text fields are language maps: one key per language, the same keys as `languages`. A project with one language still writes it as a map, for example `display_name: { en: Pumpkin Timer }`.
@@ -168,6 +169,7 @@ Text fields are language maps: one key per language, the same keys as `languages
 | `funding` | no | Donation or sponsorship URL. |
 | `privacy_policy` | yes, when `data_collected` is not `none`, and for Android and iOS | Absolute URL. |
 | `terms_of_service` | no | Absolute URL. |
+| `deep_links` | mobile apps that open links | `scheme` (custom URL scheme), `hosts` (domains for Android app links and iOS universal links), `paths` (paths the app opens, for example `/card`). |
 
 Prefer a URL over an email address in the repository.
 
@@ -187,14 +189,16 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `runtime` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. |
+| `engines` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. The Flatpak runtime is a Linux setting (`platforms.linux.settings.runtime`), not this field. |
 | `frameworks` | no | Frameworks the project is built with, by name, for example `Angular`, `React`, `SolidJS`. |
 
 #### Media
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `icon` | yes | Path to the square icon, at least 512 by 512 pixels. 1024 by 1024 when iOS is a platform. |
+| `icon` | yes | Path to a square source image: SVG, or PNG at least 1024 by 1024 pixels. Each platform's sizes are generated from it. The sizes each store needs are in Mapping. |
+| `theme_color` | no | Hex colour of the app's theme, for example `#17120f`. Used by the web manifest, Android splash and Windows tiles. |
+| `background_color` | no | Hex colour behind the icon at launch, for example `#17120f`. Used by the web manifest and Windows tiles. |
 | `social_card` | web apps | Path to the share image, 1200 by 630 pixels. Served as `/social-card.png` (see Web app). |
 | `screenshots` | no | Paths to screenshots in display order, from `docs/screenshots/`. |
 | `video` | no | URL of a demonstration video. |
@@ -210,7 +214,7 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `data_collected` | yes, for stores | `none`, or the categories of data the project collects or transmits, for example `account`, `usage`, `location`. |
+| `data_collected` | yes, for stores | `none`, or a list. Each item has a `type` from: `contact`, `location`, `identifiers`, `usage`, `diagnostics`, `content`, `health`, `financial`, `search`, `browsing`, `other`. Optional: `purposes`, `linked` (tied to the user) and `tracking` (used across other companies' apps and sites). These feed the App Store privacy labels and the Google Play data-safety form. |
 | `age_rating` | no | `everyone`, `teen` or `mature`. |
 | `accessibility` | no | The standard the project tests against, for example `WCAG 2.2 AA`. Only when tested. |
 
@@ -221,13 +225,28 @@ Prefer a URL over an email address in the repository.
 | Key | Required | Meaning |
 | --- | --- | --- |
 | `min_version` | yes for `android` and `ios`; optional otherwise | Lowest version the platform runs on. Android uses the API level as an integer, iOS uses the OS version as a string. The generator writes it as `minSdkVersion` (Android) or `MinimumOSVersion` (iOS). |
-| `identifier` | no | Overrides the top-level `identifier` for this platform. Use it when a platform needs its own ID, for example iOS bundle IDs that differ from Android, or Windows package names. Android and iOS use it as the application ID and bundle ID, and iOS uses it as the default SKU. Chromium and Firefox extension IDs come from the store, so their identifier is not checked. |
-| `permissions` | no | List of `name` and `reason`. On Android, `name` is the permission. On iOS, `name` is the `Info.plist` usage-description key. Each reason is shown to users. |
+| `identifier` | no | Overrides the top-level `identifier` for this platform. Use it when a platform needs its own ID, for example iOS bundle IDs that differ from Android, or Windows package names. Android and iOS use it as the application ID and bundle ID, and iOS uses it as the default SKU. Chromium's extension ID comes from the store unless the developer sets a `key`. Firefox needs the developer to set `browser_specific_settings.gecko.id`, so the identifier applies there. Neither is checked as reverse-DNS. |
+| `permissions` | no | List of `name` and `reason`. On Android, `name` is the permission. On iOS, `name` is the `Info.plist` usage-description key. `reason` is a language map, one text per language, shown to users, like every other text field. |
 | `screenshots` | yes for stores | Map of device class to a list of paths in `docs/screenshots/`. Device classes are listed under each platform. |
 | `distribution` | no | Stores for this platform, for example `google-play`, `app-store`. |
 | `settings` | no | Anything that only one platform has. Each platform's section lists its keys. |
 
 A platform with no settings is written as `web:` with nothing after it.
+
+#### Platform settings
+
+`settings` holds what one platform needs beyond the universal keys.
+
+| Platform | Settings |
+| --- | --- |
+| `web` | `start_url` (default `/`), `display` (`standalone`, `fullscreen`, `minimal-ui` or `browser`), `orientation`. Used by the web manifest. |
+| `chromium` | `manifest_version` (3), `minimum_chrome_version`, `host_permissions` (list of URL patterns), `key` (only when the developer sets a fixed extension ID). |
+| `firefox` | `manifest_version`. The extension ID is `identifier` (`browser_specific_settings.gecko.id`). |
+| `vscode` | `publisher` (the Marketplace publisher name), `engine_vscode` (minimum VS Code version, for example `^1.90.0`). |
+| `npm` | `name` (the npm package name, when it differs from `display_name`). |
+| `linux` | `package_formats` (for example `AppImage`, `flatpak`), `runtime` (the Flatpak runtime, for example `org.freedesktop.Platform`). |
+| `windows` | `installer` (for example `msix`). |
+| `macos` | `notarized` (`true` or `false`). |
 
 #### Android
 
@@ -319,6 +338,39 @@ Answers that the store forms ask for, so they are filled in from this file and k
 | Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
 | Store metadata (`metadata/`, written by `scripts/manifest`) | `display_name`, `summary`, `description`, `store`, `languages`, `platforms`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
+
+#### Mapping
+
+Each row shows where a field goes in each native manifest. A generator uses this table. Each cell is written from the native documentation and must be confirmed before a generator relies on it. Empty cells mean the format has no such field.
+
+| Field | Android | iOS | Web manifest | Chromium / Firefox | macOS | Windows (MSIX) | Linux (AppStream) | VS Code / npm |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `identifier` | `applicationId` | `CFBundleIdentifier` | | Firefox `gecko.id` | `CFBundleIdentifier` | `Identity Name` | `id` | |
+| `display_name` | app label | `CFBundleDisplayName` | `name` | `name` | `CFBundleDisplayName` | `DisplayName` | `name` | `displayName` |
+| `short_name` | | | `short_name` | | | | | |
+| `summary` | short description | | `description` | `description` | | `Description` | `summary` | `description` |
+| `description` | full description | description | | | | | `description` | `description` (npm) |
+| `version` | `versionName` | `CFBundleShortVersionString` | | `version` | `CFBundleShortVersionString` | `Version` | `releases` | `version` |
+| `min_version` | `minSdkVersion` | `MinimumOSVersion` | | `minimum_chrome_version` | `LSMinimumSystemVersion` | `MinVersion` | | `engines.vscode` |
+| `icon` | launcher icon (mipmap densities) | app icon set (1024) | `icons` | `icons` (16, 48, 128) | `.icns` | logo set | `icon` (64, 128) | `icon` (128) |
+| `theme_color` | splash theme | | `theme_color` | | | `BackgroundColor` tile | | |
+| `background_color` | splash background | | `background_color` | | | `BackgroundColor` tile | | |
+| `copyright` | | `NSHumanReadableCopyright` | | | `NSHumanReadableCopyright` | | | |
+| `permissions` | `uses-permission` | usage-description keys | | `permissions`, `host_permissions` | entitlements | capabilities | | |
+| `languages` | resource locales | `CFBundleLocalizations` | `lang` | | `CFBundleLocalizations` | resource languages | `languages` | |
+| `default_language` | default locale | `CFBundleDevelopmentRegion` | `lang` | `default_locale` | `CFBundleDevelopmentRegion` | `DefaultLanguage` | | |
+| `url` | | marketing URL | | `homepage_url` | | | `url` | `homepage` (npm) |
+| `support` | support URL | support URL | | | | | | `bugs` (npm) |
+| `privacy_policy` | privacy policy URL | privacy policy URL | | | | | | |
+| `categories` | category | `LSApplicationCategoryType` | | | `LSApplicationCategoryType` | | `categories` | `categories` |
+| `keywords` | | keywords (store) | | | | | `keywords` | `keywords` |
+| `data_collected` | data safety form | privacy labels | | | | | | |
+| `deep_links` | app links (`assetlinks.json`) | universal links, URL schemes | | | URL types | protocol activation | | |
+| `team` (owner) | | | | `author` | | publisher name | `developer` | `author` (npm) |
+| `license` | | | | | | | `project_license` | `license` |
+| `engines` | | | | | | | | `engines` (npm) |
+
+The `version` and `license` values come from the ecosystem file (`package.json`, `manifest.json`). The build number, `versionCode`, and the MSIX four-part version are set at build time, not stored here.
 
 ### Repository metadata
 

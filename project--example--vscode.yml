@@ -20,3 +20,4 @@ platforms:
   vscode:
     settings:
       publisher: johndoe
+      engine_vscode: "^1.90.0"
