@@ -1,0 +1,61 @@
+# Example project.yml for an iOS app. Placeholder names; see project-example.yml for every field.
+type: mobile-app
+display_name: Pumpkin Timer
+identifier: com.johndoe.pumpkintimer
+summary: A countdown timer for carving pumpkins and trick-or-treat night.
+categories:
+  - utilities
+status: beta
+languages:
+  - en
+default_language: en
+url: https://johndoe.example/pumpkin-timer
+privacy_policy: https://johndoe.example/pumpkin-timer/privacy
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+platforms:
+  ios:
+    min_version: "16.0"
+    permissions:
+      - name: NSPhotoLibraryAddUsageDescription
+        reason: Saves a picture of your carved pumpkin to Photos.
+    screenshots:
+      iphone_6_9:
+        - docs/screenshots/ios/01-timer.png
+        - docs/screenshots/ios/02-settings.png
+      ipad_13:
+        - docs/screenshots/ios/ipad-13-timer.png
+    distribution:
+      - app-store
+    settings:
+      sku: pumpkintimer-ios
+      primary_category: Utilities
+      secondary_category: Lifestyle
+      copyright: "© 2026 John Doe"
+icon: assets/logo/logo.png
+store:
+  title:
+    en: Pumpkin Timer
+  subtitle:
+    en: Halloween countdown timer
+  keywords:
+    en: halloween,pumpkin,timer,countdown,carving
+  promotional_text:
+    en: Count down to carving time and the first trick-or-treat knock.
+  description:
+    en: |
+      Pumpkin Timer counts down to the moments that matter on Halloween. Set as many timers
+      as you like and get a gentle vibration when each one ends.
+  release_notes:
+    en: First release.
+data_collected: none
+age_rating: everyone
+compliance:
+  pricing: free
+  export_compliance:
+    uses_encryption: false
+  target_audience:
+    - all ages

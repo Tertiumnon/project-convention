@@ -1,11 +1,13 @@
-# Example project.yml: a complete manifest for a web app.
-# Fields that package.json already holds (version, license, repository, engines) are not repeated here.
-# Copy it to the root of a project, delete the fields that do not apply, and adapt the values.
+# Complete project.yml: every field the convention defines, with placeholder values.
+# Real projects keep only the fields that apply to them. Fields that package.json holds
+# (version, license, repository, engines) are not repeated here. Names are placeholders.
+# Platform-specific examples: project--example--<platform>.yml
 
 # ── Identity ──────────────────────────────────────────────────────────────
 type: web-app
 display_name: Hallowentine
 short_name: Hallowentine
+identifier: com.tertium.hallowentine
 summary: Create and share personalized Halloween greeting cards.
 keywords:
   - halloween
@@ -16,23 +18,24 @@ categories:
   - entertainment
   - social
 status: stable
+# language: TypeScript   # only when GitHub's detected language is wrong
 
 # ── Languages ─────────────────────────────────────────────────────────────
 languages:
   - en
-  - es
-  - pt-BR
-  - ru
   - fr
-  - de
-  - it
 default_language: en
+rtl_languages: []
 code_languages:
   - TypeScript
 
 # ── Links ─────────────────────────────────────────────────────────────────
 url: https://halloweentine.tiii.dev
+documentation: https://github.com/Tertiumnon/halloweentine-www#readme
 support: https://github.com/Tertiumnon/halloweentine-www/issues
+funding: https://johndoe.example/support
+privacy_policy: https://johndoe.example/privacy
+terms_of_service: https://johndoe.example/terms
 
 # ── People ────────────────────────────────────────────────────────────────
 # Placeholder names. Real people replace them. No email addresses.
@@ -49,18 +52,61 @@ team:
     github: janedoe
     languages:
       - fr
-      - de
+  - name: Sam Doe
+    roles:
+      - maintainer
+      - contributor
+    github: samdoe
   - name: Alex Doe
     roles:
-      - translator
       - reviewer
-    languages:
-      - es
-      - pt-BR
+    url: https://johndoe.example/alex
 
-# ── Platforms and runtime ─────────────────────────────────────────────────
+# ── Platforms ─────────────────────────────────────────────────────────────
+# Every platform uses the same keys: min_version, identifier, permissions, screenshots,
+# distribution, settings. Other platform ids: windows, macos, linux, chromium, firefox,
+# vscode, telegram. Each has its own example file.
 platforms:
+  android:
+    min_version: 26
+    identifier: com.tertium.hallowentine
+    permissions:
+      - name: android.permission.INTERNET
+        reason: Loads the card a sender shared.
+    screenshots:
+      phone:
+        - docs/screenshots/android/01-home.png
+        - docs/screenshots/android/02-card.png
+      tablet_7:
+        - docs/screenshots/android/tablet-7-home.png
+      tablet_10:
+        - docs/screenshots/android/tablet-10-home.png
+    distribution:
+      - google-play
+    settings:
+      target_version: 35
+      version_code: 1
+      category: TOOLS
+      feature_graphic: assets/store/android/feature-graphic.png
+  ios:
+    min_version: "16.0"
+    identifier: com.tertium.hallowentine
+    permissions: []
+    screenshots:
+      iphone_6_9:
+        - docs/screenshots/ios/01-home.png
+        - docs/screenshots/ios/02-card.png
+      ipad_13:
+        - docs/screenshots/ios/ipad-13-home.png
+    distribution:
+      - app-store
+    settings:
+      sku: hallowentine-ios
+      primary_category: Entertainment
+      secondary_category: Social Networking
+      copyright: "© 2026 Tertium"
   web:
+
 runtime:
   - node >=24
   - bun
@@ -70,10 +116,45 @@ frameworks:
 # ── Media ─────────────────────────────────────────────────────────────────
 icon: assets/logo/logo.png
 social_card: public/social-card.png
+screenshots:
+  - docs/screenshots/01-home.png
+  - docs/screenshots/02-card.png
+video: https://johndoe.example/hallowentine-demo
+
+# ── Store listing text ───────────────────────────────────────────────────
+# One entry per store field. Each field has one text per language in languages.
+store:
+  title:
+    en: Hallowentine
+    fr: Hallowentine
+  short_description:
+    en: Create and share Halloween greeting cards.
+    fr: Créez et partagez des cartes d'Halloween.
+  subtitle:
+    en: Halloween greeting cards
+    fr: Cartes d'Halloween
+  keywords:
+    en: halloween,greeting,card,invitation
+    fr: halloween,carte,invitation,fête
+  promotional_text:
+    en: Make someone's Halloween a little more personal.
+    fr: Rendez l'Halloween de quelqu'un un peu plus personnel.
+  description:
+    en: |
+      Hallowentine turns a short message into a Halloween card you can share as a link.
+      Choose a mood, write a message, and send it to a friend.
+    fr: |
+      Hallowentine transforme un court message en carte d'Halloween à partager par lien.
+      Choisissez une ambiance, écrivez un message et envoyez-le à un ami.
+  release_notes:
+    en: First release.
+    fr: Première version.
 
 # ── Distribution ──────────────────────────────────────────────────────────
 distribution:
   - web
+  - google-play
+  - app-store
 environments:
   - dev
   - prod
@@ -81,3 +162,17 @@ environments:
 # ── Privacy and content ───────────────────────────────────────────────────
 data_collected: none
 age_rating: everyone
+accessibility: WCAG 2.2 AA
+compliance:
+  pricing: free
+  export_compliance:
+    uses_encryption: false
+  content_rating:
+    violence: none
+    user_generated_content: no
+  target_audience:
+    - all ages
+  data_safety:
+    collects: none
+    shares: none
+    deletion_request_url: https://johndoe.example/privacy#delete

@@ -1,0 +1,27 @@
+# Example project.yml for a macOS desktop app. Placeholder names; see project-example.yml for every field.
+type: desktop-app
+display_name: Pumpkin Timer
+identifier: com.johndoe.pumpkintimer
+summary: A countdown timer for carving pumpkins, for macOS.
+languages:
+  - en
+default_language: en
+url: https://johndoe.example/pumpkin-timer
+privacy_policy: https://johndoe.example/pumpkin-timer/privacy
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+platforms:
+  macos:
+    min_version: "13.0"
+    screenshots:
+      desktop:
+        - docs/screenshots/macos/01-timer.png
+    distribution:
+      - mac-app-store
+    settings:
+      notarized: true
+icon: assets/logo/logo.png
+data_collected: none

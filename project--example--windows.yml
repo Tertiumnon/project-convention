@@ -1,0 +1,27 @@
+# Example project.yml for a Windows desktop app. Placeholder names; see project-example.yml for every field.
+type: desktop-app
+display_name: Pumpkin Timer
+identifier: com.johndoe.pumpkintimer
+summary: A countdown timer for carving pumpkins, for Windows.
+languages:
+  - en
+default_language: en
+url: https://johndoe.example/pumpkin-timer
+privacy_policy: https://johndoe.example/pumpkin-timer/privacy
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+platforms:
+  windows:
+    min_version: "10.0.19041"
+    screenshots:
+      desktop:
+        - docs/screenshots/windows/01-timer.png
+    distribution:
+      - microsoft-store
+    settings:
+      installer: msix
+icon: assets/logo/logo.png
+data_collected: none

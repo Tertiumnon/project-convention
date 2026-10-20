@@ -1,0 +1,17 @@
+# Example project.yml for a Telegram sticker pack. Placeholder names; see project-example.yml for every field.
+type: telegram-sticker-pack
+display_name: Pumpkin Stickers
+summary: Pumpkin stickers for carving season.
+languages:
+  - en
+default_language: en
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - designer
+platforms:
+  telegram:
+    settings:
+      set_name: pumpkin_stickers
+icon: assets/stickers/01-pumpkin.png
