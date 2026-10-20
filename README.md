@@ -77,15 +77,13 @@ A folder is named for what it contains. A project adds folders only for its own 
 
 ### README
 
-The README is for people who use the project; listings such as the Tertium site show it as the project page. Sections, in this order:
+The README is for people who use the project; listings such as the Tertium site show it as the project page. It holds, in this order:
 
 1. **Title**: a level-1 heading with the display name (see Names).
-2. **Description**: one line, the same text as the GitHub repository description.
-3. **Screenshots**: images from `docs/screenshots/`, with relative paths.
-4. **Usage**.
-5. **Documentation**: links to `docs/INSTALL.md` and `docs/DEVELOPMENT.md` (see Documentation). An end-user app may keep a short **Install** section instead, when installing is only downloading it.
-6. **Changelog**: a link to `CHANGELOG.md`.
-7. **License**.
+2. **Summary**: one line, the same text as the GitHub repository description and `summary` in `project.yml`.
+3. **Description**: what the project does and how to use it, with screenshots from `docs/screenshots/` between `<!-- screenshots -->` and `<!-- /screenshots -->`, so listings can replace them with their own gallery.
+
+The README has no sections that only point to other files, such as the changelog, the licence, `docs/` or release notes: this guide says where each file is, and tools and readers find them there. An end-user app may keep a short **Install** section when installing is only downloading it.
 
 ### Changelog
 
