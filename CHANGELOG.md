@@ -6,6 +6,7 @@
 - Web app: `public/` folder, its usual files (favicons, icons, `manifest.webmanifest`, `robots.txt`, share image), and the rule that missing files return a real 404.
 - Web app: `robots.txt` rules, absolute `https` URLs behind a proxy, sitemap alternates, per-language previews and JSON-LD.
 - Browser extension: `manifest.json` and icon rules.
+- `project.yml` as the full project manifest: identity, languages, links, people, platforms, media, distribution, privacy. `project-example.yml` shows a complete web app.
 
 ### Changed
 

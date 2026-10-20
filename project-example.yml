@@ -1,19 +1,23 @@
-# Example project.yml for a web app: the attributes that package.json does not hold.
-# Copy it to the root of a project and adapt the values.
+# Example project.yml: a complete manifest for a web app.
+# Fields that package.json already holds (version, license, repository, engines) are not repeated here.
+# Copy it to the root of a project, delete the fields that do not apply, and adapt the values.
 
-# Required. One of the types listed in README (Project attributes).
+# ── Identity ──────────────────────────────────────────────────────────────
 type: web-app
-
-# Required. The name people see: README title, site title, app name.
 display_name: Hallowentine
-
-# Required. One sentence, up to 120 characters. Same text as the GitHub description.
+short_name: Hallowentine
 summary: Create and share personalized Halloween greeting cards.
+keywords:
+  - halloween
+  - greeting cards
+  - cards
+  - invitations
+categories:
+  - entertainment
+  - social
+status: stable
 
-# Public address of the site. Omit when the project has none.
-url: https://halloweentine.tiii.dev
-
-# Required for web apps. BCP 47 tags of every language the interface supports.
+# ── Languages ─────────────────────────────────────────────────────────────
 languages:
   - en
   - es
@@ -22,10 +26,38 @@ languages:
   - fr
   - de
   - it
-
-# Required when languages is set. Used when the visitor's language is not in the list.
 default_language: en
+code_languages:
+  - TypeScript
 
-# Frameworks the project is built with, by name.
+# ── Links ─────────────────────────────────────────────────────────────────
+url: https://halloweentine.tiii.dev
+support: https://github.com/Tertiumnon/halloweentine-www/issues
+
+# ── People ────────────────────────────────────────────────────────────────
+author:
+  name: Tertium
+
+# ── Platforms and runtime ─────────────────────────────────────────────────
+platforms:
+  - web
+runtime:
+  - node >=24
+  - bun
 frameworks:
   - SolidJS
+
+# ── Media ─────────────────────────────────────────────────────────────────
+icon: assets/logo/logo.png
+social_card: public/social-card.png
+
+# ── Distribution ──────────────────────────────────────────────────────────
+distribution:
+  - web
+environments:
+  - dev
+  - prod
+
+# ── Privacy and content ───────────────────────────────────────────────────
+data_collected: none
+age_rating: everyone

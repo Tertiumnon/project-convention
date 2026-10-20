@@ -123,22 +123,104 @@ Projects with a `package.json` expose the same commands:
 
 ### Project attributes
 
-`project.yml` at the repository root holds attributes that GitHub does not provide:
+`project.yml` at the repository root is the project's manifest. It holds every fact about the project that GitHub, the ecosystem's own manifest and the store listings do not already hold, in one file. See `project-example.yml` for a complete web app.
 
-```yaml
-type: web-app
-frameworks:
-  - SolidJS
-```
+Facts that the ecosystem's manifest already holds are not repeated in `project.yml`. These are `version` and `license` in `package.json` (or `manifest.json` for extensions), `repository` in `package.json`, and `engines` in `package.json`. Tools read them from there, and the two files must agree. The repository itself provides `CHANGELOG.md` and `SECURITY.md`.
+
+Tools read the file with a YAML parser. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
+
+Required means required for every project unless the type notes below say otherwise.
+
+#### Identity
 
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
+| `display_name` | yes | The name people see: README title, site title, app name. See Names. |
+| `short_name` | no | One short word for tight spaces such as home screens and command lines. |
+| `summary` | yes | One sentence, up to 120 characters. Same text as the GitHub description. |
+| `keywords` | no | Search keywords, lowercase. |
+| `categories` | no | Store and catalogue categories, lowercase, for example `entertainment`, `developer-tools`, `productivity`. |
+| `status` | no | `alpha`, `beta`, `stable`, `maintenance` or `archived`. |
 | `language` | no | Set only when GitHub's detected language is wrong, for example `Markdown` for documentation repositories. |
+
+#### Languages
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `languages` | yes, when the project has a user interface or product documentation | BCP 47 tags of every language the project is written in for its readers, for example `en`, `pt-BR`. |
+| `default_language` | yes, when `languages` is set | Used when a reader's language is not in the list. |
+| `rtl_languages` | no | The subset of `languages` written right to left. |
+| `code_languages` | no | Programming languages the project is written in, for example `TypeScript`. These are not spoken languages. |
+
+#### Links
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `url` | web apps with a site | Public home page. Omit when there is none. Absolute `https` URL. |
+| `documentation` | no | Documentation URL. |
+| `support` | no | Where people ask for help: issue tracker, forum or contact page. |
+| `funding` | no | Donation or sponsorship URL. |
+| `privacy_policy` | yes, when `data_collected` is not `none`, and for stores | Absolute URL. |
+| `terms_of_service` | no | Absolute URL. |
+
+Prefer a URL over an email address in the repository.
+
+#### People
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `author` | yes | `name` and, optionally, `url`. |
+| `maintainers` | no | List of people in the same form as `author`. |
+
+#### Platforms and runtime
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `platforms` | yes | Where the project runs: `web`, `windows`, `macos`, `linux`, `android`, `ios`, `chromium`, `firefox`, `vscode`, `telegram`. |
+| `runtime` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. |
 | `frameworks` | no | Frameworks the project is built with, by name, for example `Angular`, `React`, `SolidJS`. |
 
-- Tools read the file with a YAML parser.
-- A repository without `project.yml` is missing an attribute and gets a `convention-todo` issue (see Missing attributes).
+#### Media
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `icon` | yes | Path to the square icon, at least 512 by 512 pixels. |
+| `social_card` | web apps | Path to the share image, 1200 by 630 pixels. Served as `/social-card.png` (see Web app). |
+| `screenshots` | no | Paths to screenshots in display order, from `docs/screenshots/`. |
+| `video` | no | URL of a demonstration video. |
+
+#### Distribution
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `distribution` | no | Where the project is published: `github-releases`, `npm`, `web`, `chrome-web-store`, `firefox-addons`, `microsoft-store`, `mac-app-store`, `google-play`, `flathub`. |
+| `environments` | no | Deployment environments, for example `dev` and `prod`. Never host names. |
+
+#### Privacy and content
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `data_collected` | yes, for stores | `none`, or the categories of data the project collects or transmits, for example `account`, `usage`, `location`. |
+| `age_rating` | no | `everyone`, `teen` or `mature`. |
+| `accessibility` | no | The standard the project tests against, for example `WCAG 2.2 AA`. Only when tested. |
+
+#### Type notes
+
+- **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: [web]`.
+- **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
+- **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
+- **Doc projects**: require `languages` and `default_language`.
+
+#### What reads the manifest
+
+| Consumer | Reads |
+| --- | --- |
+| Web app manifest (`manifest.webmanifest`) | `display_name`, `short_name`, `summary`, `languages`, `icon` |
+| Page metadata and JSON-LD | `display_name`, `summary`, `url`, `languages`, `default_language`, `social_card`, `license` from `package.json` |
+| Language switcher | `languages`, `default_language`, `rtl_languages` |
+| Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
+| Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
 
 ### Repository metadata
 
