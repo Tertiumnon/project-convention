@@ -1,5 +1,7 @@
 # Project Structure Convention
 
+Standard layout, files and GitHub metadata for Tertium projects: README, changelog, release notes, screenshots, logo, topics.
+
 How to lay out a software project and its GitHub repository, so that every project looks the same to the people who read it and to the tools that build, release and list it.
 
 The guide builds on [Standard Readme](https://github.com/RichardLitt/standard-readme) for the README, [Keep a Changelog](https://keepachangelog.com/) for the changelog, [Semantic Versioning](https://semver.org/) for versions.
