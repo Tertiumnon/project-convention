@@ -9,6 +9,7 @@ The guide has one **Common** section, which applies to every project, and one se
 - [Doc project](#doc-project): `guide`, `cookbook`, `style-guide`, `conventions`, `agreement`
 - [Browser extension](#browser-extension): `browser-extension`, `firefox-extension`
 - [Web app](#web-app): `web-app`
+- [Mobile app](#mobile-app): `mobile-app`
 - [Desktop app](#desktop-app): `desktop-app`
 
 Other types (`cli`, `library`, `npm-package`, `vscode-extension`, `telegram-sticker-pack`, `icon-set`, `css-library`, `code-generator`) use the Common section only, plus the Assets subfolders that match their kind.
@@ -127,7 +128,7 @@ Projects with a `package.json` expose the same commands:
 
 Facts that the ecosystem's manifest already holds are not repeated in `project.yml`. These are `version` and `license` in `package.json` (or `manifest.json` for extensions), `repository` in `package.json`, and `engines` in `package.json`. Tools read them from there, and the two files must agree. The repository itself provides `CHANGELOG.md` and `SECURITY.md`.
 
-Tools read the file with a YAML parser. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
+Tools read the file with a YAML parser. `scripts/manifest/manifest.ts` checks the file against this section and writes the store text per language in the Fastlane layout (`bun scripts/manifest/manifest.ts project.yml <out-dir>`). It lists every problem and exits with an error when a required field is missing or a text is too long. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
 
 Required means required for every project unless the type notes below say otherwise.
 
@@ -135,8 +136,9 @@ Required means required for every project unless the type notes below say otherw
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
+| `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
 | `display_name` | yes | The name people see: README title, site title, app name. See Names. |
+| `identifier` | yes, for installed platforms | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the Android application ID and the iOS bundle ID. |
 | `short_name` | no | One short word for tight spaces such as home screens and command lines. |
 | `summary` | yes | One sentence, up to 120 characters. Same text as the GitHub description. |
 | `keywords` | no | Search keywords, lowercase. |
@@ -199,7 +201,7 @@ Prefer a URL over an email address in the repository.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `distribution` | no | Where the project is published: `github-releases`, `npm`, `web`, `chrome-web-store`, `firefox-addons`, `microsoft-store`, `mac-app-store`, `google-play`, `flathub`. |
+| `distribution` | no | Where the project is published: `github-releases`, `npm`, `web`, `chrome-web-store`, `firefox-addons`, `microsoft-store`, `mac-app-store`, `app-store`, `google-play`, `flathub`. |
 | `environments` | no | Deployment environments, for example `dev` and `prod`. Never host names. |
 
 #### Privacy and content
@@ -210,9 +212,71 @@ Prefer a URL over an email address in the repository.
 | `age_rating` | no | `everyone`, `teen` or `mature`. |
 | `accessibility` | no | The standard the project tests against, for example `WCAG 2.2 AA`. Only when tested. |
 
+#### Android
+
+Used by `mobile-app` projects that ship to Google Play.
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `android.min_sdk` | yes | Lowest Android API level the app runs on. |
+| `android.target_sdk` | no | API level the app is built for. Raised when the store requires a newer one. |
+| `android.version_code` | yes | Integer that increases with every upload to the store. |
+| `android.category` | no | Google Play category, for example `TOOLS`. |
+| `android.permissions` | no | List of `name` and `reason`. Each permission needs a reason the store shows to users. |
+| `android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. Paths from `docs/screenshots/`. |
+| `android.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
+
+#### iOS
+
+Used by `mobile-app` projects that ship to the App Store.
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `ios.min_os` | yes | Lowest iOS version the app runs on, for example `"16.0"`. |
+| `ios.sku` | yes | Identifier the developer chooses for App Store Connect. Not shown to users. |
+| `ios.primary_category` | yes | App Store category, for example `Utilities`. |
+| `ios.secondary_category` | no | Second App Store category. |
+| `ios.copyright` | yes | Copyright line, for example `© 2026 John Doe`. |
+| `ios.usage_descriptions` | when the app asks for a permission | Map of the `Info.plist` key to the reason shown to users. Empty when the app asks for nothing. |
+| `ios.screenshots` | yes | Device classes, for example `iphone_6_9` and `ipad_13`, each with paths from `docs/screenshots/`. |
+
+The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/`.
+
+#### Store listing
+
+`store` holds the listing text for every language, so the project's store pages are translated the same way as the app. Each key is a language tag from `languages`. Each entry has these keys:
+
+| Key | Android file | iOS file | Limit (characters) |
+| --- | --- | --- | --- |
+| `title` | `title.txt` | `name.txt` | 30 |
+| `short_description` | `short_description.txt` | not used | 80 |
+| `subtitle` | not used | `subtitle.txt` | 30 |
+| `keywords` | not used | `keywords.txt` | 100, comma-separated |
+| `promotional_text` | not used | `promotional_text.txt` | 170 |
+| `description` | `full_description.txt` | `description.txt` | 4000 |
+| `release_notes` | `release_notes.txt` | `release_notes.txt` | 500 on Android, 4000 on iOS |
+
+- Every language in `languages` needs an entry for every mobile platform, with at least `title` and `description`.
+- The limits are the store rules when this section was written. Check them before a submission.
+- The script writes these files into `metadata/<platform>/<language>/`.
+
+#### Compliance
+
+Answers that the store forms ask for, so they are filled in from this file and kept in one place.
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `compliance.pricing` | yes | `free` or `paid`. |
+| `compliance.export_compliance.uses_encryption` | yes, for iOS | `true` or `false`. |
+| `compliance.content_rating` | yes | Answers to the content questionnaire. Each key is a question, each value is the answer. |
+| `compliance.target_audience` | yes, for Google Play | Audiences the app is made for, for example `all ages`. |
+| `compliance.data_safety` | yes, for Google Play | `collects`, `shares` and `deletion_request_url`, as the Play data-safety form asks. |
+| `privacy_policy` (top level) | yes, for Android and iOS | Absolute URL of the privacy policy. |
+
 #### Type notes
 
 - **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: [web]`.
+- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `store` for every language, `android` and `ios` blocks for the platforms it ships to, `privacy_policy` and `compliance`.
 - **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
 - **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
 - **Doc projects**: require `languages` and `default_language`.
@@ -225,6 +289,7 @@ Prefer a URL over an email address in the repository.
 | Page metadata and JSON-LD | `display_name`, `summary`, `url`, `languages`, `default_language`, `social_card`, `license` from `package.json` |
 | Language switcher | `languages`, `default_language`, `rtl_languages` |
 | Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
+| Store metadata (`metadata/`, written by `scripts/manifest`) | `store`, `languages`, `android`, `ios`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
 
 ### Repository metadata
@@ -355,6 +420,15 @@ Rules:
 - A JSON-LD block (`WebApplication`) with `inLanguage` on each language page.
 
 ---
+
+## Mobile app
+
+For `mobile-app`: Android and iOS apps that ship through the stores. **This section is specific to mobile apps.** A web app follows the Web app section, and a desktop app follows the Desktop app section.
+
+- `identifier` is the reverse-DNS name of the app. It is the Android application ID and the iOS bundle ID, so it never changes after the first upload.
+- The store text, screenshot paths and compliance answers are in `project.yml`, under `store`, `android`, `ios` and `compliance` (see Project attributes). Do not type them into the store forms by hand.
+- Store builds (`.aab` for Google Play, `.ipa` for the App Store) are uploaded to the stores. They are not attached to the GitHub Release unless the project also publishes them directly.
+- Store images follow the Assets rules. Listing images go in `assets/store/android/` and `assets/store/ios/`.
 
 ## Desktop app
 

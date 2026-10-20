@@ -7,6 +7,8 @@
 - Web app: `robots.txt` rules, absolute `https` URLs behind a proxy, sitemap alternates, per-language previews and JSON-LD.
 - Browser extension: `manifest.json` and icon rules.
 - `project.yml` as the full project manifest: identity, languages, links, people, platforms, media, distribution, privacy. `project-example.yml` shows a complete web app.
+- Mobile app: `mobile-app` type, `identifier`, Android and iOS blocks, store text per language, and compliance answers. `project-mobile-example.yml` shows a complete example.
+- `scripts/manifest/manifest.ts`: checks `project.yml` against the convention and writes store text in the Fastlane layout.
 - `team` in `project.yml`: people with roles (`owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`) and the languages translators work on. Replaces `author` and `maintainers`.
 
 ### Changed

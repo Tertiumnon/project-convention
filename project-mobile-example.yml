@@ -1,0 +1,139 @@
+# Example project.yml for a mobile app: Android and iOS, with store text and compliance answers.
+# All names and addresses are placeholders. Copy this file to the root of a project and adapt it.
+
+# ── Identity ──────────────────────────────────────────────────────────────
+type: mobile-app
+display_name: Pumpkin Timer
+short_name: Pumpkin
+identifier: com.johndoe.pumpkintimer
+summary: A countdown timer for carving pumpkins and trick-or-treat night.
+keywords:
+  - timer
+  - halloween
+  - countdown
+  - pumpkin
+categories:
+  - utilities
+  - lifestyle
+status: beta
+
+# ── Languages ─────────────────────────────────────────────────────────────
+languages:
+  - en
+  - fr
+default_language: en
+
+# ── Links ─────────────────────────────────────────────────────────────────
+url: https://johndoe.example/pumpkin-timer
+support: https://johndoe.example/pumpkin-timer/support
+privacy_policy: https://johndoe.example/pumpkin-timer/privacy
+
+# ── People ────────────────────────────────────────────────────────────────
+# Placeholder names. Real people replace them. No email addresses.
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - developer
+    github: johndoe
+  - name: Jane Doe
+    roles:
+      - designer
+      - translator
+    github: janedoe
+    languages:
+      - fr
+
+# ── Platforms and runtime ─────────────────────────────────────────────────
+platforms:
+  - android
+  - ios
+runtime:
+  - Kotlin
+  - Swift
+
+# ── Media ─────────────────────────────────────────────────────────────────
+icon: assets/logo/logo.png
+
+# ── Android ───────────────────────────────────────────────────────────────
+android:
+  min_sdk: 26
+  target_sdk: 35
+  version_code: 1
+  category: TOOLS
+  permissions:
+    - name: android.permission.VIBRATE
+      reason: Vibrates when the timer ends.
+  screenshots:
+    phone:
+      - docs/screenshots/android/01-timer.png
+      - docs/screenshots/android/02-settings.png
+    tablet_7:
+      - docs/screenshots/android/tablet-7-timer.png
+    tablet_10:
+      - docs/screenshots/android/tablet-10-timer.png
+  feature_graphic: assets/store/android/feature-graphic.png
+
+# ── iOS ───────────────────────────────────────────────────────────────────
+ios:
+  min_os: "16.0"
+  sku: pumpkintimer-ios
+  primary_category: Utilities
+  secondary_category: Lifestyle
+  copyright: "© 2026 John Doe"
+  usage_descriptions: {}
+  screenshots:
+    iphone_6_9:
+      - docs/screenshots/ios/01-timer.png
+      - docs/screenshots/ios/02-settings.png
+    ipad_13:
+      - docs/screenshots/ios/ipad-13-timer.png
+
+# ── Store listing text, per language ─────────────────────────────────────
+# Keys are language tags from languages. Each length limit is checked by scripts/manifest.
+store:
+  en:
+    title: Pumpkin Timer
+    short_description: Countdown timer for carving and trick-or-treat night.
+    subtitle: Halloween countdown timer
+    keywords: halloween,pumpkin,timer,countdown,carving
+    promotional_text: Count down to carving time and the first trick-or-treat knock.
+    description: |
+      Pumpkin Timer counts down to the moments that matter on Halloween: the start of
+      carving, the first candle, and the first knock on the door. Set as many timers as you
+      like, give each one a name, and get a gentle vibration when it ends.
+    release_notes: First release.
+  fr:
+    title: Minuteur Citrouille
+    short_description: Minuteur pour sculpter la citrouille et la nuit des bonbons.
+    subtitle: Minuteur d'Halloween
+    keywords: halloween,citrouille,minuteur,compte à rebours
+    promotional_text: Comptez jusqu'à la sculpture et au premier coup à la porte.
+    description: |
+      Minuteur Citrouille compte à rebours jusqu'aux moments forts d'Halloween : le début
+      de la sculpture, la première bougie et le premier coup à la porte. Créez autant de
+      minuteurs que vous voulez, nommez-les et recevez une légère vibration à la fin.
+    release_notes: Première version.
+
+# ── Compliance and distribution ───────────────────────────────────────────
+data_collected: none
+age_rating: everyone
+compliance:
+  pricing: free
+  export_compliance:
+    uses_encryption: false
+  content_rating:
+    violence: none
+    user_generated_content: no
+  target_audience:
+    - all ages
+  data_safety:
+    collects: none
+    shares: none
+    deletion_request_url: https://johndoe.example/pumpkin-timer/privacy#delete
+distribution:
+  - google-play
+  - app-store
+environments:
+  - dev
+  - prod
