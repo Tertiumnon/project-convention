@@ -2,6 +2,16 @@
 
 ### Added
 
+- Platform settings table for web manifest, extensions, VS Code, npm and Linux. Top-level `copyright`, `theme_color`, `background_color` and `deep_links`.
+- Mapping table: where each field goes in each native manifest. Confirm each cell before a generator relies on it.
+- Checker: known platform ids only, hex colours, category list, data types in `data_collected`, and permission reasons as language maps.
+
+### Changed
+
+- `runtime` is `engines`, matching `engines` in `package.json`. The Flatpak runtime is `platforms.linux.settings.runtime`.
+- Permission `reason` is a language map.
+- Firefox takes its ID from the developer (`gecko.id`), not from the store. Chromium's ID comes from the store unless a `key` is set.
+
 - Each platform may set its own `identifier`, which overrides the top-level one. The checker requires an identifier for each installed platform, checks reverse-DNS form for Android, iOS, Windows, macOS and Linux, and writes the identifier into each `settings.json`.
 
 - Sections per project type: Doc project, Browser extension, Web app, Desktop app. The Common section applies to all.
