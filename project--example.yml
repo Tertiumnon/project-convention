@@ -62,6 +62,11 @@ team:
       - reviewer
     url: https://johndoe.example/alex
 
+# ── Doc projects only (guide, cookbook, style-guide, conventions, agreement) ──
+# audience: [developers]
+# entry_point: content/README.md
+# formats: [markdown, html, pdf]
+
 # ── Platforms ─────────────────────────────────────────────────────────────
 # Every platform uses the same keys: min_version, identifier, permissions, screenshots,
 # distribution, settings. Other platform ids: windows, macos, linux, chromium, firefox,

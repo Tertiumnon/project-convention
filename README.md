@@ -305,7 +305,7 @@ Answers that the store forms ask for, so they are filled in from this file and k
 - **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `store` for every language, `platforms.android` and `platforms.ios` settings for the platforms it ships to, `privacy_policy` and `compliance`.
 - **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
 - **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
-- **Doc projects**: require `languages` and `default_language`.
+- **Doc projects**: require `languages`, `default_language`, `audience`, `entry_point` (inside `content/`, which must exist) and `platforms` (usually `web`).
 
 #### What reads the manifest
 
@@ -376,6 +376,16 @@ For `guide`, `cookbook`, `style-guide`, `conventions` and `agreement`. The Markd
 - Links inside `content/` are relative to the file that contains them.
 - `language` is `Markdown` in `project.yml` when GitHub detects another language.
 - Do not add `src/` or `dist/` unless the project ships a generated artifact. A doc project has no release artifacts.
+
+#### Doc fields
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `audience` | yes | Who the document is for, as a list of short labels, for example `parents`, `developers`, `translators`. |
+| `entry_point` | yes | Path to the first page a reader opens, inside `content/`, for example `content/README.md`. The file must exist. |
+| `formats` | no | Formats the document is delivered in: `markdown`, `html`, `pdf`. |
+
+The checker also requires a `content/` folder next to `project.yml`.
 
 ---
 

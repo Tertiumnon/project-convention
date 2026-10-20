@@ -1,8 +1,8 @@
 // Checks project.yml against the manifest convention and writes store metadata.
 // Usage: bun scripts/manifest/manifest.ts <project.yml> <out-dir>
 // The metadata layout follows Fastlane's, so its tools can read the output.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 type FileSpec = [string, number];
 type Store = Record<string, Record<string, string>>;
@@ -28,6 +28,9 @@ type Manifest = {
   data_collected?: string | string[];
   privacy_policy?: string;
   store?: Store;
+  audience?: string[];
+  entry_point?: string;
+  formats?: string[];
 };
 
 const installedPlatforms = ['android', 'ios', 'windows', 'macos', 'linux', 'chromium', 'firefox'];
@@ -84,6 +87,19 @@ const platformErrors = (m: Manifest): string[] => {
   const collected = [m.data_collected ?? 'none'].flat();
   const mobile = names.includes('android') || names.includes('ios');
   if ((collected.some(c => c !== 'none') || mobile) && !m.privacy_policy) errors.push('privacy_policy is required for this project');
+  return errors;
+};
+
+const docTypes = ['guide', 'cookbook', 'style-guide', 'conventions', 'agreement'];
+
+// Doc projects keep their text in content/, and their entry point must exist there.
+const docErrors = (m: Manifest, root: string): string[] => {
+  if (!docTypes.includes(m.type ?? '')) return [];
+  const errors: string[] = [];
+  if (!m.audience?.length) errors.push('audience is required for doc projects');
+  if (!m.entry_point) errors.push('entry_point is required for doc projects');
+  else if (!existsSync(join(root, m.entry_point))) errors.push(`entry_point ${m.entry_point} does not exist`);
+  if (!existsSync(join(root, 'content'))) errors.push('content/ folder is required for doc projects');
   return errors;
 };
 
@@ -152,6 +168,7 @@ const errors = [
   ...unknownLanguageErrors(manifest),
   ...missingErrors(manifest),
   ...lengthErrors(manifest),
+  ...docErrors(manifest, dirname(file)),
 ];
 if (errors.length > 0) {
   console.error(errors.map(error => `- ${error}`).join('\n'));

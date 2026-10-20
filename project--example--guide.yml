@@ -1,0 +1,33 @@
+# Example project.yml for a doc project: a guide. Placeholder names; see project--example.yml for every field.
+# The checker needs content/ next to this file, with the entry point inside it.
+type: guide
+display_name: Pumpkin Timer Guide
+summary: How to time, carve and light your pumpkins with Pumpkin Timer.
+keywords:
+  - halloween
+  - pumpkin
+  - guide
+categories:
+  - lifestyle
+status: stable
+languages:
+  - en
+default_language: en
+url: https://johndoe.example/pumpkin-timer/guide
+team:
+  - name: John Doe
+    roles:
+      - owner
+      - maintainer
+audience:
+  - parents
+  - first-time carvers
+entry_point: content/README.md
+formats:
+  - markdown
+  - html
+platforms:
+  web:
+distribution:
+  - web
+data_collected: none
