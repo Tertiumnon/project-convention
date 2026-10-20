@@ -124,7 +124,7 @@ Projects with a `package.json` expose the same commands:
 
 ### Project attributes
 
-`project.yml` at the repository root is the project's manifest. It holds every fact about the project that GitHub, the ecosystem's own manifest and the store listings do not already hold, in one file. See `project-example.yml` for every field, with placeholder values. For one platform, see `project--example--<platform>.yml` (android, ios, web, windows, macos, linux, chromium, firefox, vscode, telegram).
+`project.yml` at the repository root is the project's manifest. It holds every fact about the project that GitHub, the ecosystem's own manifest and the store listings do not already hold, in one file. See `project-example.yml` for every field, with placeholder values. For one platform, see `project--example--<platform>.yml` (android, ios, web, windows, macos, linux, chromium, firefox, vscode, telegram). A desktop app built for several systems from one code base is `project--example--crossplatform.yml`.
 
 Facts that the ecosystem's manifest already holds are not repeated in `project.yml`. These are `version` and `license` in `package.json` (or `manifest.json` for extensions), `repository` in `package.json`, and `engines` in `package.json`. Tools read them from there, and the two files must agree. The repository itself provides `CHANGELOG.md` and `SECURITY.md`.
 
