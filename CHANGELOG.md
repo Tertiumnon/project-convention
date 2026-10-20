@@ -8,6 +8,7 @@
 - Browser extension: `manifest.json` and icon rules.
 - `project.yml` as the full project manifest: identity, languages, links, people, platforms, media, distribution, privacy. `project-example.yml` shows a complete web app.
 - Mobile app: `mobile-app` type, `identifier`, Android and iOS blocks, store text per language, and compliance answers. `project-mobile-example.yml` shows a complete example.
+- Store text is keyed by field, then language (`store.description.fr`), so each text is written once.
 - `scripts/manifest/manifest.ts`: checks `project.yml` against the convention and writes store text in the Fastlane layout.
 - `team` in `project.yml`: people with roles (`owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`) and the languages translators work on. Replaces `author` and `maintainers`.
 

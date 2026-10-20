@@ -5,6 +5,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 type FileSpec = [string, number];
+type Store = Record<string, Record<string, string>>;
 type Manifest = {
   type?: string;
   display_name?: string;
@@ -18,12 +19,12 @@ type Manifest = {
   privacy_policy?: string;
   android?: { min_sdk?: number };
   ios?: { min_os?: string };
-  store?: Record<string, Record<string, string>>;
+  store?: Store;
 };
 
 const installedPlatforms = ['android', 'ios', 'windows', 'macos', 'linux', 'chromium', 'firefox'];
 
-// Store text keys, the file each one becomes, and the length limit in characters.
+// Store fields, the file each one becomes, and the length limit in characters.
 // Limits are the store rules when this was written. Confirm them before a submission.
 const platformFiles: Record<string, Record<string, FileSpec>> = {
   android: {
@@ -40,6 +41,11 @@ const platformFiles: Record<string, Record<string, FileSpec>> = {
     description: ['description.txt', 4000],
     release_notes: ['release_notes.txt', 4000],
   },
+};
+
+const requiredFields: Record<string, string[]> = {
+  android: ['title', 'short_description', 'description'],
+  ios: ['title', 'description'],
 };
 
 const requiredErrors = (m: Manifest): string[] => {
@@ -67,43 +73,54 @@ const platformErrors = (m: Manifest): string[] => {
   return errors;
 };
 
-const storeErrors = (m: Manifest): string[] => {
+const mobilePlatforms = (m: Manifest): string[] => (m.platforms ?? []).filter(p => p in platformFiles);
+
+const unknownLanguageErrors = (m: Manifest): string[] => {
   const errors: string[] = [];
-  const store = m.store ?? {};
-  for (const locale of Object.keys(store)) {
-    if (!m.languages?.includes(locale)) errors.push(`store.${locale} is not in languages`);
-  }
-  for (const platform of (m.platforms ?? []).filter(p => p in platformFiles)) {
-    for (const language of m.languages ?? []) {
-      errors.push(...entryErrors(platform, language, store[language]));
+  for (const [field, texts] of Object.entries(m.store ?? {})) {
+    for (const language of Object.keys(texts)) {
+      if (!m.languages?.includes(language)) errors.push(`store.${field}.${language} is not in languages`);
     }
   }
   return errors;
 };
 
-const entryErrors = (platform: string, language: string, entry: Record<string, string> | undefined): string[] => {
-  if (!entry) return [`store.${language} is missing for ${platform}`];
+const missingErrors = (m: Manifest): string[] => {
   const errors: string[] = [];
-  const files = platformFiles[platform];
-  for (const key of ['title', 'description']) {
-    if (!entry[key]) errors.push(`store.${language}.${key} is missing`);
+  const store = m.store ?? {};
+  for (const platform of mobilePlatforms(m)) {
+    for (const field of requiredFields[platform]) {
+      for (const language of m.languages ?? []) {
+        if (!store[field]?.[language]) errors.push(`store.${field}.${language} is missing (${platform})`);
+      }
+    }
   }
-  for (const [key, value] of Object.entries(entry)) {
-    const limit = files[key]?.[1];
-    if (limit && value.length > limit) errors.push(`store.${language}.${key} is longer than ${limit} characters (${platform})`);
+  return errors;
+};
+
+const lengthErrors = (m: Manifest): string[] => {
+  const errors: string[] = [];
+  for (const platform of mobilePlatforms(m)) {
+    for (const [field, texts] of Object.entries(m.store ?? {})) {
+      const limit = platformFiles[platform][field]?.[1];
+      if (!limit) continue;
+      for (const [language, text] of Object.entries(texts)) {
+        if (text.length > limit) errors.push(`store.${field}.${language} is longer than ${limit} characters (${platform})`);
+      }
+    }
   }
   return errors;
 };
 
 const writeMetadata = (m: Manifest, outDir: string): void => {
-  for (const platform of (m.platforms ?? []).filter(p => p in platformFiles)) {
+  for (const platform of mobilePlatforms(m)) {
     for (const language of m.languages ?? []) {
-      const entry = m.store?.[language] ?? {};
       const dir = join(outDir, platform, language);
       mkdirSync(dir, { recursive: true });
-      for (const [key, value] of Object.entries(entry)) {
-        const spec = platformFiles[platform][key];
-        if (spec) writeFileSync(join(dir, spec[0]), `${value}\n`);
+      for (const [field, texts] of Object.entries(m.store ?? {})) {
+        const spec = platformFiles[platform][field];
+        const text = texts[language];
+        if (spec && text) writeFileSync(join(dir, spec[0]), `${text}\n`);
       }
     }
   }
@@ -115,7 +132,13 @@ if (!file || !outDir) {
   process.exit(2);
 }
 const manifest = Bun.YAML.parse(readFileSync(file, 'utf8')) as Manifest;
-const errors = [...requiredErrors(manifest), ...platformErrors(manifest), ...storeErrors(manifest)];
+const errors = [
+  ...requiredErrors(manifest),
+  ...platformErrors(manifest),
+  ...unknownLanguageErrors(manifest),
+  ...missingErrors(manifest),
+  ...lengthErrors(manifest),
+];
 if (errors.length > 0) {
   console.error(errors.map(error => `- ${error}`).join('\n'));
   process.exit(1);

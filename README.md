@@ -244,9 +244,19 @@ The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/
 
 #### Store listing
 
-`store` holds the listing text for every language, so the project's store pages are translated the same way as the app. Each key is a language tag from `languages`. Each entry has these keys:
+`store` holds the listing text. It has one entry per store field, and each field has one text per language in `languages`. A description is written once per language under its field, never repeated as a separate entry.
 
-| Key | Android file | iOS file | Limit (characters) |
+```yaml
+store:
+  title:
+    en: Pumpkin Timer
+    fr: Minuteur Citrouille
+  description:
+    en: Count down to carving time.
+    fr: Compte à rebours jusqu'à la sculpture.
+```
+
+| Field | Android file | iOS file | Limit (characters) |
 | --- | --- | --- | --- |
 | `title` | `title.txt` | `name.txt` | 30 |
 | `short_description` | `short_description.txt` | not used | 80 |
@@ -256,7 +266,8 @@ The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/
 | `description` | `full_description.txt` | `description.txt` | 4000 |
 | `release_notes` | `release_notes.txt` | `release_notes.txt` | 500 on Android, 4000 on iOS |
 
-- Every language in `languages` needs an entry for every mobile platform, with at least `title` and `description`.
+- Every language in `languages` needs a `title` and a `description` for every mobile platform. Android also needs a `short_description`.
+- A language that is not in `languages` is an error, so the store texts and the interface languages always match.
 - The limits are the store rules when this section was written. Check them before a submission.
 - The script writes these files into `metadata/<platform>/<language>/`.
 

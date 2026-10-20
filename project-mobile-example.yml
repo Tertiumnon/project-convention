@@ -89,31 +89,37 @@ ios:
     ipad_13:
       - docs/screenshots/ios/ipad-13-timer.png
 
-# ── Store listing text, per language ─────────────────────────────────────
-# Keys are language tags from languages. Each length limit is checked by scripts/manifest.
+# ── Store listing text ───────────────────────────────────────────────────
+# One entry per store field. Each field has one text per language in languages.
+# The script checks the length limits, see the Store listing section of the README.
 store:
-  en:
-    title: Pumpkin Timer
-    short_description: Countdown timer for carving and trick-or-treat night.
-    subtitle: Halloween countdown timer
-    keywords: halloween,pumpkin,timer,countdown,carving
-    promotional_text: Count down to carving time and the first trick-or-treat knock.
-    description: |
+  title:
+    en: Pumpkin Timer
+    fr: Minuteur Citrouille
+  short_description:
+    en: Countdown timer for carving and trick-or-treat night.
+    fr: Minuteur pour sculpter la citrouille et la nuit des bonbons.
+  subtitle:
+    en: Halloween countdown timer
+    fr: Minuteur d'Halloween
+  keywords:
+    en: halloween,pumpkin,timer,countdown,carving
+    fr: halloween,citrouille,minuteur,compte à rebours
+  promotional_text:
+    en: Count down to carving time and the first trick-or-treat knock.
+    fr: Comptez jusqu'à la sculpture et au premier coup à la porte.
+  description:
+    en: |
       Pumpkin Timer counts down to the moments that matter on Halloween: the start of
       carving, the first candle, and the first knock on the door. Set as many timers as you
       like, give each one a name, and get a gentle vibration when it ends.
-    release_notes: First release.
-  fr:
-    title: Minuteur Citrouille
-    short_description: Minuteur pour sculpter la citrouille et la nuit des bonbons.
-    subtitle: Minuteur d'Halloween
-    keywords: halloween,citrouille,minuteur,compte à rebours
-    promotional_text: Comptez jusqu'à la sculpture et au premier coup à la porte.
-    description: |
+    fr: |
       Minuteur Citrouille compte à rebours jusqu'aux moments forts d'Halloween : le début
       de la sculpture, la première bougie et le premier coup à la porte. Créez autant de
       minuteurs que vous voulez, nommez-les et recevez une légère vibration à la fin.
-    release_notes: Première version.
+  release_notes:
+    en: First release.
+    fr: Première version.
 
 # ── Compliance and distribution ───────────────────────────────────────────
 data_collected: none
