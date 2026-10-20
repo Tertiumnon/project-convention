@@ -49,6 +49,7 @@ A folder is named for what it contains. A project adds folders only for its own 
 ### Documentation
 
 - `docs/` holds notes about the project itself: architecture, decisions, contributor notes. AI agents and developers use it as working memory, so it is not the place for product documentation.
+- Technical instructions live here, not in the README: `docs/INSTALL.md` for installing or building from source, with its requirements, and `docs/DEVELOPMENT.md` for scripts, tests, project layout and releasing.
 - A project with no working notes has no `docs/` folder.
 - Product documentation goes in `content/`, and only doc projects have it (see Doc project).
 
@@ -76,13 +77,13 @@ A folder is named for what it contains. A project adds folders only for its own 
 
 ### README
 
-Sections, in this order:
+The README is for people who use the project; listings such as the Tertium site show it as the project page. Sections, in this order:
 
 1. **Title**: a level-1 heading with the display name (see Names).
 2. **Description**: one line, the same text as the GitHub repository description.
 3. **Screenshots**: images from `docs/screenshots/`, with relative paths.
-4. **Install**.
-5. **Usage**.
+4. **Usage**.
+5. **Documentation**: links to `docs/INSTALL.md` and `docs/DEVELOPMENT.md` (see Documentation). An end-user app may keep a short **Install** section instead, when installing is only downloading it.
 6. **Changelog**: a link to `CHANGELOG.md`.
 7. **License**.
 
