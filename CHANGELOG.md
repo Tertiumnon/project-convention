@@ -1,3 +1,33 @@
+# Changelog
+
+## 0.1.0 - 2026-10-20
+
+- fix: package private flag
+- docs: add TODO for the manifest work
+- feat(manifest): generator for JSON platform manifests, Windows publisher, Flathub domain rule
+- docs: changelog entry for the manifest gap fixes
+- docs: fix manifest gaps - settings per platform, categories, data types, colours, deep links, native mapping
+- docs: per-platform identifier override with reverse-DNS check
+- docs: flat manifest without app parent, language-map text, store text from app fields
+- docs: checker compliance and file checks, iOS defaults, confirmed store limits
+- docs: changelog entry for doc project fields
+- docs: doc project fields, content/ and entry point checks, guide example
+- docs: rename project-example.yml to project--example.yml
+- docs: add command-line tool example
+- docs: add cross-platform desktop example for windows, macos and linux
+- docs: point the manifest intro at the complete example and platform examples
+- docs: complete project-example.yml and one example per platform
+- docs: universal platform keys, optional fields with defaults
+- docs: make platforms a map with per-platform settings
+- docs: key store text by field then language, so descriptions are not repeated
+- docs: add mobile app manifest, store text and compliance, manifest checker script
+- docs: add team with roles to project.yml, John Doe examples
+- docs: make project.yml the full project manifest, expand project-example.yml
+- docs: add example project.yml for a web app
+- docs: split the guide by project type, add web app public/ and robots.txt
+- docs: title the guide Project Structure Convention
+- docs: project structure guide
+
 ## [Unreleased]
 
 ### Added
