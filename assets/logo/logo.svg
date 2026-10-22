@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Project Structure Convention</title>
+  <rect width="1024" height="1024" rx="224" fill="#17120f"/>
+  <g transform="translate(0 26)">
+  <path d="M320 320 V660 Q320 724 384 724 H520 M320 420 H520 M320 572 H520" fill="none" stroke="#f2a33a" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="216" y="200" width="208" height="136" rx="32" fill="#f2a33a"/>
+  <rect x="520" y="372" width="288" height="96" rx="28" fill="#f5efe6"/>
+  <rect x="520" y="524" width="288" height="96" rx="28" fill="#f5efe6"/>
+  <rect x="520" y="676" width="200" height="96" rx="28" fill="#f5efe6" opacity="0.6"/>
+  </g>
+</svg>

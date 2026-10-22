@@ -1,18 +1,20 @@
 # Complete project.yml: every field the convention defines, with placeholder values.
-# Real projects keep only the fields that apply to them. package.json holds version, license,
-# repository and engines, so they are not repeated here. Names are placeholders.
+# A mobile app with a web version. Real projects keep only the fields that apply to them.
+# package.json holds version, license, repository and engines, so they are not repeated here.
+# Names are placeholders.
 # Platform examples: project--example--<platform>.yml
 
 # ── App ───────────────────────────────────────────────────────────────────
 # Everything that describes the app. Text fields are language maps: one key per language.
-type: web-app
-identifier: com.tertium.hallowentine   # installed platforms only; reverse-DNS
+type: mobile-app
+slug: hallowentine
+identifier: com.johndoe.hallowentine   # installed platforms only; reverse-DNS
 short_name: Hallowentine
 status: stable
 keywords:
   - halloween
   - greeting cards
-categories:
+categories:                            # first is the primary store category
   - entertainment
   - social
 display_name:
@@ -38,27 +40,24 @@ rtl_languages: []
 code_languages:
   - TypeScript
 
-url: https://halloweentine.tiii.dev
-documentation: https://github.com/Tertiumnon/halloweentine-www#readme
-support: https://github.com/Tertiumnon/halloweentine-www/issues
+url: https://hallowentine.johndoe.example
+documentation: https://github.com/johndoe/hallowentine#readme
+support: https://github.com/johndoe/hallowentine/issues
 funding: https://johndoe.example/support
 privacy_policy: https://johndoe.example/privacy
 terms_of_service: https://johndoe.example/terms
 
-engines:
-  - node >=24
-  - bun
 frameworks:
   - SolidJS
 
 icon: assets/logo/logo.png
 theme_color: "#17120f"
 background_color: "#17120f"
-copyright: "© 2026 Tertium"
+copyright: "© 2026 John Doe"
 deep_links:
   scheme: hallowentine
   hosts:
-    - halloweentine.tiii.dev
+    - hallowentine.johndoe.example
   paths:
     - /card
 social_card: public/social-card.png
@@ -124,8 +123,6 @@ platforms:
       - google-play
     settings:
       target_version: 35
-      version_code: 1
-      category: TOOLS
       feature_graphic: assets/store/android/feature-graphic.png
   ios:
     min_version: "16.0"
@@ -140,15 +137,12 @@ platforms:
       - app-store
     settings:
       sku: hallowentine-ios
-      primary_category: Entertainment
-      secondary_category: Social Networking
-      copyright: "© 2026 Tertium"
   web:
 
-distribution:
+distribution:                          # channels not tied to one platform; stores sit under platforms
   - web
-  - google-play
-  - app-store
+listed_on:                             # catalogues that list this project
+  - https://johndoe.example
 environments:
   - dev
   - prod
@@ -177,7 +171,7 @@ compliance:
     uses_encryption: false
   content_rating:
     violence: none
-    user_generated_content: no
+    user_generated_content: false
   target_audience:
     - all ages
   data_safety:

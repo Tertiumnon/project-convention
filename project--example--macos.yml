@@ -1,10 +1,15 @@
 # Example project.yml for a macOS desktop app. Placeholder names; see project--example.yml for every field.
 type: desktop-app
+slug: pumpkin-timer
 identifier: com.johndoe.pumpkintimer
 display_name:
   en: Pumpkin Timer
 summary:
   en: A countdown timer for carving pumpkins, for macOS.
+description:
+  en: |
+    Pumpkin Timer counts down while you carve. Set as many timers as you like
+    and get a notification when each one ends.
 languages:
   - en
 default_language: en

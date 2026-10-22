@@ -1,297 +1,295 @@
 # Project Structure Convention
 
-Standard layout, files and GitHub metadata for Tertium projects: README, changelog, release notes, screenshots, logo, topics.
+Standard layout, files and GitHub metadata for Tertium projects.
 
-How to lay out a software project and its GitHub repository, so that every project looks the same to the people who read it and to the tools that build, release and list it.
+Built on [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
-The guide builds on [Standard Readme](https://github.com/RichardLitt/standard-readme) for the README, [Keep a Changelog](https://keepachangelog.com/) for the changelog, [Semantic Versioning](https://semver.org/) for versions.
-
-The guide has one **Common** section, which applies to every project, and one section per project type. Find your project type in `project.yml` (see Project attributes) and read the Common section plus that type's section:
+Read **Common** and your type's section. The type is `type` in `project.yml`:
 
 - [Doc project](#doc-project): `guide`, `cookbook`, `style-guide`, `conventions`, `agreement`
 - [Browser extension](#browser-extension): `browser-extension`, `firefox-extension`
 - [Web app](#web-app): `web-app`
 - [Mobile app](#mobile-app): `mobile-app`
 - [Desktop app](#desktop-app): `desktop-app`
-
-Other types (`cli`, `library`, `npm-package`, `vscode-extension`, `telegram-sticker-pack`, `icon-set`, `css-library`, `code-generator`) use the Common section only, plus the Assets subfolders that match their kind.
+- Others (`cli`, `library`, `npm-package`, `vscode-extension`, `telegram-sticker-pack`, `icon-set`, `css-library`, `code-generator`): Common only, plus the assets that match their kind.
 
 ---
 
 ## Common
 
-### Root
+### Files
 
-The root holds these files:
-
-- `README.md`: what the project is and how to use it.
-- `CHANGELOG.md`: version history.
-- `LICENSE`: required.
-- `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`: when the project has them.
-- The manifest and configuration files its tools require, for example `package.json`, `Cargo.toml`, `manifest.json` or `.gitignore`.
+| File | Required | Contents |
+| --- | --- | --- |
+| `README.md` | yes | Title, summary, description with screenshots. See README. |
+| `LICENSE` | yes | MIT unless the project has its own terms. See Licence. |
+| `CHANGELOG.md` | yes | Version history. See Changelog. |
+| `project.yml` | yes | Project attributes. See Project attributes. |
+| `.gitignore` | yes | Ignores `build/` and `dist/`. |
+| Ecosystem manifest (`package.json`, `Cargo.toml`, `manifest.json`, ...) | yes | Version, licence, repository and the tool's own settings. |
+| `docs/INSTALL.md` | yes, except doc projects | Installing, or building from source, with requirements. |
+| `docs/USAGE.md` | yes, except doc projects | Commands, options, screens and workflows. |
+| `docs/DEVELOPMENT.md` | yes, except doc projects | Scripts, tests, project layout and contributor notes. |
+| `docs/PUBLISH.md` | yes, except doc projects | Releasing and publishing, store listing and review details, permission reasons. |
+| `docs/screenshots/NN-short-name.png` | yes for `mobile-app`, `desktop-app`, `browser-extension`; recommended otherwise | Screenshots. See Screenshots and social preview. |
+| `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md` | no | Only when the project has them. |
+| Other `docs/*.md` | no | Architecture, decisions. Working notes for developers and agents, not product documentation. |
 
 Anything a tool does not need at the root goes into a folder. The default branch is `main`.
 
 ### Folders
 
-| Path | Contents |
+| Folder | Contents |
 | --- | --- |
-| `src/` | Source code. Monorepos use `packages/` or `apps/` instead. |
-| `test/` or `tests/` | Automated tests. Use one name per project. |
-| `content/` | Documentation as the product: guides, cheatsheets, cookbooks. Doc projects only. See Doc project. |
-| `docs/` | Notes about building and maintaining the project. See Documentation. Screenshots go in `docs/screenshots/`. |
-| `data/` | Structured data the project reads or writes, such as JSON, YAML or CSV. Not prose. |
+| `src/` | Source code, nothing generated. Monorepos use `packages/` or `apps/`. |
+| `test/` or `tests/` | Automated tests. One name per project. |
 | `scripts/` | Build and release scripts. |
+| `data/` | Structured data the project reads or writes: JSON, YAML, CSV. Not prose. |
+| `content/` | Product documentation: guides, cheatsheets, cookbooks. Doc projects only. |
 | `assets/` | Static binary files. See Assets. |
-| `public/` | Files served as they are from the site root. Web apps only. See Web app. |
-| `build/` or `dist/` | Generated output. See Source and build output. |
+| `public/` | Files served as they are from the site root. Web apps only. |
+| `build/` | Intermediate build output, such as compiled files. Git-ignored. |
+| `dist/` | Final artifacts ready to publish: bundles, installers, packages. Git-ignored. |
 
-A folder is named for what it contains. A project adds folders only for its own purpose, such as `packages/` for a monorepo.
+A project adds folders only for its own purpose, such as `packages/` for a monorepo.
 
-### Documentation
+### Naming by ecosystem
 
-- `docs/` holds notes about the project itself: architecture, decisions, contributor notes. AI agents and developers use it as working memory, so it is not the place for product documentation.
-- Technical instructions live here, not in the README: `docs/INSTALL.md` for installing or building from source, with its requirements, and `docs/DEVELOPMENT.md` for scripts, tests, project layout and releasing.
-- A project with no working notes has no `docs/` folder.
-- Product documentation goes in `content/`, and only doc projects have it (see Doc project).
+Folder names are lowercase by default. An ecosystem may name folders its own way; the project follows it for folders only.
 
-### Source and build output
+| Ecosystem | Folders |
+| --- | --- |
+| Default | `docs/`, `assets/`, `scripts/` |
+| C# and .NET | `Docs/`, `Assets/`, `Scripts/`, `Docs/Screenshots/` |
 
-- `src/` holds the source code, and nothing generated.
-- Generated output goes into exactly one folder per project:
-  - `build/` for intermediate output from the build, such as compiled files.
-  - `dist/` for final artifacts ready to publish, such as bundles, installers and packages.
-- Both are listed in `.gitignore` and not committed.
+File names keep the names in Files, and tool files keep theirs (`.csproj`, `Cargo.toml`, `package.json`).
 
 ### Assets
 
-`assets/` holds the static binary files that the project or its listings use: images, icons, fonts, and store and sticker images.
+`assets/` holds static binary files: images, icons, fonts, store and sticker images. Text files (JSON, YAML, Markdown) do not belong there. Names are lowercase, hyphenated, with no spaces, unless the ecosystem says otherwise.
 
-- Sort files into subfolders by kind:
-  - `assets/logo/`: the logo, `logo.svg` or `logo.png`. Square, at least 512 by 512 pixels.
-  - `assets/icons/`: icons used by the project.
-  - `assets/images/`: other images.
-  - `assets/fonts/`: fonts.
-  - `assets/store/<platform>/`: store listing images. See Desktop app and Browser extension.
-  - `assets/stickers/`: sticker pack images (sticker packs only).
-- File and folder names are lowercase, hyphenated, with no spaces.
-- Text files, such as JSON, YAML or Markdown, do not belong in `assets/`.
+| Folder | Holds |
+| --- | --- |
+| `assets/logo/` | Required. `logo.svg` or `logo.png`: square, at least 1024 by 1024 pixels. |
+| `assets/icons/` | Icons the project uses. Desktop apps: the sizes each platform requires. Browser extensions: 16, 48 and 128 pixel PNGs. |
+| `assets/images/` | Other images. |
+| `assets/fonts/` | Fonts. |
+| `assets/store/<platform>/` | Store listing images, for example `assets/store/android/`, `assets/store/windows/`, `assets/store/chrome/`. |
+| `assets/stickers/` | Sticker pack images. Sticker packs only. |
 
 ### README
 
-The README is for people who use the project; listings such as the Tertium site show it as the project page. It holds, in this order:
+The README is for people who use the project, and listings show it as the project page. It holds only:
 
-1. **Title**: a level-1 heading with the display name (see Names).
-2. **Summary**: one line, the same text as the GitHub repository description and `summary` in `project.yml`.
-3. **Description**: what the project does and how to use it, with screenshots from `docs/screenshots/` between `<!-- screenshots -->` and `<!-- /screenshots -->`, so listings can replace them with their own gallery.
+1. **Title**: level-1 heading with the display name (see Names).
+2. **Summary**: one line, the same as the GitHub description and `summary` in `project.yml`.
+3. **Description**: what the project does, with screenshots from `docs/screenshots/` between `<!-- screenshots -->` and `<!-- /screenshots -->`.
 
-The README has no sections that only point to other files, such as the changelog, the licence, `docs/` or release notes: this guide says where each file is, and tools and readers find them there. An end-user app may keep a short **Install** section when installing is only downloading it.
+A command-line tool may add a **Usage** section after the description: its main commands and one example. The full reference is `docs/USAGE.md`.
+
+No other sections, and no sections that only point to other files. Installing, usage and publishing live in their `docs/` files. A doc project with no `content/` is the exception: see Doc project.
 
 ### Changelog
 
-- Use the [Keep a Changelog](https://keepachangelog.com/) format, newest release first.
-- Keep pending changes under `## [Unreleased]`.
-- Each release gets a `## X.Y.Z` section, matching its tag `vX.Y.Z`.
-- Section headings: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
-- Entries can be written by hand or generated from commits and release notes. The `gith` tool from [@tertium/gith](https://www.npmjs.com/package/@tertium/gith) generates them and adds each version as its own commit, `docs(changelog): <version>`.
+- [Keep a Changelog](https://keepachangelog.com/) format, newest release first.
+- Pending changes go under `## [Unreleased]`. Each release gets `## X.Y.Z - YYYY-MM-DD`, matching tag `vX.Y.Z`.
+- Entries are written by hand under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` and `Security`, or generated from commits. A generated changelog is not edited by hand.
 
 ### Versions and releases
 
-- Use Semantic Versioning. Pre-releases such as `-rc.1` are not marked as the latest version.
-- A release bumps the version in the manifest, creates the `vX.Y.Z` tag on `main`, and pushes both.
+- Semantic Versioning. Pre-releases such as `-rc.1` are not marked as the latest version.
+- A release bumps the manifest version, creates tag `vX.Y.Z` on `main`, and pushes both.
 - Patches are small commits on `main`.
-- Each tag has a GitHub Release. Its body is the matching changelog section.
-- What is attached to the Release depends on the project type (see Desktop app and Browser extension). A web app is deployed, not released as files.
+- Each tag has a GitHub Release whose body is its changelog section.
+- Release attachments depend on the type. A web app is deployed, not released as files.
 
-#### npm scripts
+#### Release scripts
 
-Projects with a `package.json` expose the same commands:
-
-```json
-{
-  "scripts": {
-    "changelog": "npx @tertium/gith changelog",
-    "release:patch": "npx @tertium/gith release --patch",
-    "release:minor": "npx @tertium/gith release --minor",
-    "release:major": "npx @tertium/gith release --major"
-  }
-}
-```
+Projects with a `package.json` have `release:patch`, `release:minor`, `release:major` and `version` scripts, named and run as in the npm convention.
 
 ### Screenshots and social preview
 
 - **Screenshots**: `docs/screenshots/NN-short-name.png`, numbered in display order, at most 1280 pixels wide.
-- **Social preview** (the image GitHub shows for the repository): 1280 by 640 pixels, set in the repository settings on GitHub, not stored in the repository. Web apps also need a share image in the site itself (see Web app).
+- **Social preview** (the GitHub repository image): 1280 by 640 pixels, set in GitHub's repository settings, not stored in the repository.
+
+### Store assets
+
+Store assets are required before submitting. Check each store's current rules first. Values were checked when this guide was written.
+
+| Store | Asset | Requirement | Status |
+| --- | --- | --- | --- |
+| Microsoft Store (Windows) | Store logo | Required in the submission FAQ, optional on the listing page. Confirm in Partner Center. | Conflicting sources |
+| Microsoft Store (Windows) | Screenshots | PNG up to 50 MB, desktop at 1366 x 768 or larger. | Verified; counts conflict |
+| Microsoft Store (Windows) | Privacy policy URL | Required when the app collects or transmits personal information. | Verified |
+| Mac App Store (macOS) | App icon | 1024 x 1024 pixels. | Confirm in App Store Connect |
+| Mac App Store (macOS) | Screenshots | Not confirmed. | To verify |
+| Google Play (Android) | App icon | 512 x 512, 32-bit PNG with alpha, up to 1024 KB. | Verified by secondary sources |
+| Google Play (Android) | Feature graphic | 1024 x 500, JPEG or 24-bit PNG without alpha. | Verified |
+| Google Play (Android) | Screenshots | JPEG or 24-bit PNG without alpha, 320 to 3840 px, longest side at most twice the shortest. At least 2. | Partly verified |
 
 ### Project attributes
 
-`project.yml` at the repository root is the project's manifest. It holds every fact about the project that GitHub, the ecosystem's own manifest and the store listings do not already hold, in one file. See `project--example.yml` for every field, with placeholder values. For one platform, see `project--example--<platform>.yml` (android, ios, web, windows, macos, linux, chromium, firefox, vscode, telegram). A desktop app built for several systems from one code base is `project--example--crossplatform.yml`. A command-line tool is `project--example--cli.yml`.
+`project.yml` at the root holds the facts that GitHub, the ecosystem manifest and the store listings do not hold.
 
-Facts that the ecosystem's manifest already holds are not repeated in `project.yml`. These are `version` and `license` in `package.json` (or `manifest.json` for extensions), `repository` in `package.json`, and `engines` in `package.json`. Tools read them from there, and the two files must agree. The repository itself provides `CHANGELOG.md` and `SECURITY.md`.
+- Full reference with placeholders: `project--example.yml`.
+- Per platform: `project--example--<platform>.yml` (android, ios, web, windows, macos, linux, chromium, firefox, vscode, telegram).
+- Cross-platform desktop app: `project--example--crossplatform.yml`. Command-line tool: `project--example--cli.yml`. Doc project: `project--example--guide.yml`.
 
-Tools read the file with a YAML parser. `scripts/manifest/manifest.ts` checks the file against this section and writes the store text per language in the Fastlane layout (`bun scripts/manifest/manifest.ts project.yml <out-dir>`). It lists every problem and exits with an error when a required field is missing, a text is too long, or a compliance answer is missing. With `--check-files`, it also checks that the icon, share image, screenshots and feature graphic exist and have the right size. The iOS `settings.json` gets its defaults: `sku` is the identifier, and `copyright` is the owner and the current year. A repository without `project.yml` is missing attributes and gets a `convention-todo` issue (see Missing attributes).
+Not repeated in `project.yml`: `version`, `license`, `repository` and `engines` in `package.json` (or `manifest.json` for extensions). Tools read them there.
 
-Required means required for every project unless the type notes below say otherwise.
+Required means required for every project unless the type notes say otherwise.
 
 #### Identity
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `type` | yes | What the project is. One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
-| `identifier` | yes, unless every installed platform sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. It is the default for every platform. A platform may override it with `platforms.<id>.identifier`. Use a domain the team owns. Flathub checks that the domain belongs to the project, so a GitHub project uses `io.github.<owner>.<app>`. Fix it before the first store upload: Android and iOS identifiers cannot change after that. |
-| `display_name` | yes | Map of language to the name people see. It is the store title and the README title. |
-| `short_name` | no | One short word for tight spaces. For a CLI, the command name. |
-| `summary` | yes | Map of language to one sentence, up to 120 characters. The default language is the GitHub description. It is the Android short description. |
-| `description` | for stores | Map of language to the long text. It is the store description. |
+| `type` | yes | One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
+| `slug` | yes | Lowercase, hyphenated ID, unique among the owner's projects, for example `pumpkin-timer`. Catalogues use it in URLs. Usually the repository name. Never changes once listed. |
+| `identifier` | with an installed platform (`android`, `ios`, `windows`, `macos`, `linux`, `firefox`), unless each sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. Default for every platform; a platform can override it with `platforms.<id>.identifier`. Use a domain the team owns; GitHub projects use `io.github.<owner>.<app>`, which Flathub accepts. Fix it before the first store upload: Android and iOS identifiers cannot change later. |
+| `display_name` | yes | Map of language to the name people see: store title and README title. |
+| `short_name` | no | One short word. For a CLI, the command name. |
+| `summary` | yes | Map of language to one sentence, up to 120 characters. Default language: the GitHub description. Android short description. |
+| `description` | for stores | Map of language to the long text. Store description. |
 | `keywords` | no | Search keywords, lowercase. |
-| `categories` | no | One or more of: `entertainment`, `games`, `lifestyle`, `productivity`, `social`, `utilities`, `developer-tools`, `education`, `health`, `music`, `photo`, `travel`, `finance`, `news`, `sports`, `shopping`, `business`, `reference`. Each store's own list is in Mapping. |
+| `categories` | yes for `ios`; no otherwise | One or more of: `entertainment`, `games`, `lifestyle`, `productivity`, `social`, `utilities`, `developer-tools`, `education`, `health`, `music`, `photo`, `travel`, `finance`, `news`, `sports`, `shopping`, `business`, `reference`. The first is the primary store category; the App Store also takes the second as its secondary category. Each store's field is in Mapping. |
 | `status` | no | `alpha`, `beta`, `stable`, `maintenance` or `archived`. |
-| `copyright` | no | Copyright line, for example `© 2026 Tertium`. Used by iOS, macOS and Windows. Not localized. |
-| `language` | no | Set only when GitHub's detected language is wrong, for example `Markdown` for documentation repositories. |
+| `copyright` | no | For example `© 2026 Tertium`. Used by iOS, macOS and Windows; the App Store takes it as its copyright line. Not localized. |
+| `language` | no | Only when GitHub's detected language is wrong, for example `Markdown`. |
 
-Text fields are language maps: one key per language, the same keys as `languages`. A project with one language still writes it as a map, for example `display_name: { en: Pumpkin Timer }`.
+Text fields are language maps with the same keys as `languages`, even with one language: `display_name: { en: Pumpkin Timer }`.
 
 #### Languages
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `languages` | yes, when the project has a user interface or product documentation | BCP 47 tags of every language the project is written in, for example `en`, `pt-BR`. |
-| `default_language` | yes, when `languages` is set | Used when a reader's language is not in the list. |
-| `rtl_languages` | no | The subset of `languages` written right to left. |
-| `code_languages` | no | Programming languages the project is written in, for example `TypeScript`. These are not spoken languages. |
+| `languages` | yes, with a user interface or product documentation | BCP 47 tags of every language, for example `en`, `pt-BR`. |
+| `default_language` | yes, when `languages` is set | Used when the reader's language is not listed. |
+| `rtl_languages` | no | The `languages` written right to left. |
+| `code_languages` | no | Programming languages, for example `TypeScript`. Not spoken languages. |
 
 #### Links
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `url` | web apps with a site | Public home page. Absolute `https` URL. Omit when there is none. |
+| `url` | web apps with a site | Public home page, absolute `https` URL. |
 | `documentation` | no | Documentation URL. |
-| `support` | no | Where people ask for help: issue tracker, forum or contact page. |
+| `support` | no | Issue tracker, forum or contact page. |
 | `funding` | no | Donation or sponsorship URL. |
-| `privacy_policy` | yes, when `data_collected` is not `none`, and for Android and iOS | Absolute URL. |
+| `privacy_policy` | yes when `data_collected` is not `none`; always for Android and iOS | Absolute URL. |
 | `terms_of_service` | no | Absolute URL. |
-| `deep_links` | mobile apps that open links | `scheme` (custom URL scheme), `hosts` (domains for Android app links and iOS universal links), `paths` (paths the app opens, for example `/card`). |
+| `deep_links` | mobile apps that open links | `scheme` (custom URL scheme), `hosts` (domains for Android app links and iOS universal links), `paths` (for example `/card`). |
 
-Prefer a URL over an email address in the repository.
+Prefer a URL over an email address.
 
 #### People
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `team` | yes | List of people who work on the project. Each person has `name`, `roles` and optional `github` (GitHub login), `url` and `languages`. |
-| `team[].roles` | yes | One or more of: `owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`. A person may hold several roles. |
-| `team[].languages` | for translators | The languages the person translates into, as BCP 47 tags from `languages`. |
+| `team` | yes | People who work on the project: `name`, `roles`, optional `github` (login), `url`, `languages`. |
+| `team[].roles` | yes | One or more of: `owner`, `maintainer`, `developer`, `designer`, `translator`, `reviewer`, `contributor`. |
+| `team[].languages` | translators | BCP 47 tags from `languages` the person translates into. |
 
-- The `owner` is the person `author` in `package.json` names.
-- Do not put email addresses in `team`. Use `github` or `url` as the contact.
-- Names in examples are placeholders. Real people replace them.
+- The `owner` is the `author` in `package.json`.
+- No email addresses in `team`. Use `github` or `url`.
+- Names in examples are placeholders.
 
 #### Technology
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `engines` | no | Runtime versions the project needs, for example `node >=24`, `bun`. Matches `engines` in `package.json`. The Flatpak runtime is a Linux setting (`platforms.linux.settings.runtime`), not this field. |
-| `frameworks` | no | Frameworks the project is built with, by name, for example `Angular`, `React`, `SolidJS`. |
+| `frameworks` | no | By name, for example `Angular`, `React`, `SolidJS`. |
 
 #### Media
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `icon` | yes | Path to a square source image: SVG, or PNG at least 1024 by 1024 pixels. Each platform's sizes are generated from it. The sizes each store needs are in Mapping. |
-| `theme_color` | no | Hex colour of the app's theme, for example `#17120f`. Used by the web manifest, Android splash and Windows tiles. |
-| `background_color` | no | Hex colour behind the icon at launch, for example `#17120f`. Used by the web manifest and Windows tiles. |
-| `social_card` | web apps | Path to the share image, 1200 by 630 pixels. Served as `/social-card.png` (see Web app). |
-| `screenshots` | no | Paths to screenshots in display order, from `docs/screenshots/`. |
+| `icon` | yes | Path to a square SVG, or PNG at least 1024 by 1024 pixels. Each platform's sizes are generated from it. |
+| `theme_color` | no | Hex colour, for example `#17120f`. Web manifest, Android splash, Windows tiles. |
+| `background_color` | no | Hex colour behind the icon at launch. Web manifest, Windows tiles. |
+| `social_card` | web apps | Share image, 1200 by 630 pixels, served as `/social-card.png`. |
+| `screenshots` | no | Paths from `docs/screenshots/`, in display order. |
 | `video` | no | URL of a demonstration video. |
 
 #### Distribution
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `distribution` | no | Where the project is published: `github-releases`, `npm`, `web`, `chrome-web-store`, `firefox-addons`, `microsoft-store`, `mac-app-store`, `app-store`, `google-play`, `flathub`. |
+| `distribution` | no | Channels not tied to one platform: `github-releases`, `npm`, `web`. Stores go in `platforms.<id>.distribution`. |
+| `listed_on` | no | Absolute `https` URLs of the catalogues that list this project, for example a personal or team site. Each project names only its own catalogues. Channels that deliver the app go in `distribution`. |
 | `environments` | no | Deployment environments, for example `dev` and `prod`. Never host names. |
 
 #### Privacy and content
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `data_collected` | yes, for stores | `none`, or a list. Each item has a `type` from: `contact`, `location`, `identifiers`, `usage`, `diagnostics`, `content`, `health`, `financial`, `search`, `browsing`, `other`. Optional: `purposes`, `linked` (tied to the user) and `tracking` (used across other companies' apps and sites). These feed the App Store privacy labels and the Google Play data-safety form. |
+| `data_collected` | yes, for stores | `none`, or a list. Each item has a `type`: `contact`, `location`, `identifiers`, `usage`, `diagnostics`, `content`, `health`, `financial`, `search`, `browsing`, `other`. Optional: `purposes`, `linked` (tied to the user), `tracking` (used across other companies' apps and sites). Feeds the App Store privacy labels and the Google Play data-safety form. |
 | `age_rating` | no | `everyone`, `teen` or `mature`. |
-| `accessibility` | no | The standard the project tests against, for example `WCAG 2.2 AA`. Only when tested. |
+| `accessibility` | no | Standard the project is tested against, for example `WCAG 2.2 AA`. Only when tested. |
 
 #### Platforms
 
-`platforms` is a map. Each key is a platform, and every platform uses the same keys, so a generator reads any platform the same way and writes the native file for it.
+`platforms` is a map. Every platform uses the same keys, so a generator reads any platform the same way.
 
 | Key | Required | Meaning |
 | --- | --- | --- |
-| `min_version` | yes for `android` and `ios`; optional otherwise | Lowest version the platform runs on. Android uses the API level as an integer, iOS uses the OS version as a string. The generator writes it as `minSdkVersion` (Android) or `MinimumOSVersion` (iOS). |
-| `identifier` | no | Overrides the top-level `identifier` for this platform. Use it when a platform needs its own ID, for example iOS bundle IDs that differ from Android, or Windows package names. Android and iOS use it as the application ID and bundle ID, and iOS uses it as the default SKU. Chromium's extension ID comes from the store unless the developer sets a `key`. Firefox needs the developer to set `browser_specific_settings.gecko.id`, so the identifier applies there. Neither is checked as reverse-DNS. |
-| `permissions` | no | List of `name` and `reason`. On Android, `name` is the permission. On iOS, `name` is the `Info.plist` usage-description key. `reason` is a language map, one text per language, shown to users, like every other text field. |
-| `screenshots` | yes for stores | Map of device class to a list of paths in `docs/screenshots/`. Device classes are listed under each platform. |
-| `distribution` | no | Stores for this platform, for example `google-play`, `app-store`. |
-| `settings` | no | Anything that only one platform has. Each platform's section lists its keys. |
+| `min_version` | yes for `android` and `ios`; optional otherwise | Lowest version. Android: API level as an integer (`minSdkVersion`). iOS: OS version as a string (`MinimumOSVersion`). Chromium: browser version as a string. VS Code: editor version as a string, written as `^<version>`. |
+| `identifier` | no | Overrides the top-level `identifier`. Used by Android and iOS as application and bundle ID, and by iOS as the default SKU. Chromium's ID comes from the store unless `key` is set. Firefox (`browser_specific_settings.gecko.id`) needs a GUID or an email-like ID, for example `pumpkin-timer@johndoe.example`, not reverse-DNS. |
+| `permissions` | no | List of `name` and `reason`. Android: the permission. iOS: the `Info.plist` usage-description key. `reason` is a language map. |
+| `screenshots` | yes for stores | Map of device class to paths in `docs/screenshots/`. |
+| `distribution` | no | Stores for this platform: `google-play`, `app-store`, `chrome-web-store`, `firefox-addons`, `microsoft-store`, `mac-app-store`, `flathub`. |
+| `settings` | no | Settings only that platform has. |
 
 A platform with no settings is written as `web:` with nothing after it.
 
 #### Platform settings
 
-`settings` holds what one platform needs beyond the universal keys.
-
 | Platform | Settings |
 | --- | --- |
-| `web` | `start_url` (default `/`), `display` (`standalone`, `fullscreen`, `minimal-ui` or `browser`), `orientation`. Used by the web manifest. |
-| `chromium` | `manifest_version` (3), `minimum_chrome_version`, `host_permissions` (list of URL patterns), `key` (only when the developer sets a fixed extension ID). |
-| `firefox` | `manifest_version`. The extension ID is `identifier` (`browser_specific_settings.gecko.id`). |
-| `vscode` | `publisher` (the Marketplace publisher name), `engine_vscode` (minimum VS Code version, for example `^1.90.0`). |
-| `npm` | `name` (the npm package name, when it differs from `display_name`). |
-| `linux` | `package_formats` (for example `AppImage`, `flatpak`), `runtime` (the Flatpak runtime, for example `org.freedesktop.Platform`). |
-| `windows` | `installer` (for example `msix`). `publisher` (the certificate subject, for example `CN=Tertium`, which must match the signing certificate). The MSIX version is four parts, `Major.Minor.Build.Revision`, and the generator pads it with `.0`. |
+| `web` | `start_url` (default `/`), `display` (`standalone`, `fullscreen`, `minimal-ui` or `browser`; default `standalone`), `orientation`. |
+| `chromium` | `manifest_version` (3), `host_permissions` (URL patterns), `key` (only for a fixed extension ID). |
+| `firefox` | `manifest_version`. |
+| `vscode` | `publisher` (Marketplace publisher). |
+| `linux` | `package_formats` (`AppImage`, `flatpak`), `runtime` (for example `org.freedesktop.Platform`). |
+| `windows` | `installer` (for example `msix`), `publisher` (certificate subject, for example `CN=Tertium`, must match the signing certificate). The MSIX version is `Major.Minor.Build.Revision`, padded with `.0`. |
 | `macos` | `notarized` (`true` or `false`). |
+| `telegram` | `set_name` (the pack's short name in its `t.me/addstickers/` link). |
+| `android`, `ios` | See Android and iOS. |
 
 #### Android
 
-Used by `mobile-app` projects that ship to Google Play.
+For `mobile-app` projects shipped to Google Play.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms.android.min_version` | yes | Lowest API level the app runs on, as an integer, for example `26`. |
-| `platforms.android.permissions` | no | See Platforms. |
-| `platforms.android.screenshots` | yes | `phone` (at least two images), and optionally `tablet_7` and `tablet_10`. |
-| `platforms.android.settings.version_code` | no | Integer that increases with every upload. When missing, the build's version code is used. |
-| `platforms.android.settings.target_version` | no | API level the app is built for. When missing, the newest level the store accepts is used. |
-| `platforms.android.settings.category` | no | Google Play category, for example `TOOLS`. |
-| `platforms.android.settings.feature_graphic` | no | Path to the 1024 by 500 pixel feature graphic, in `assets/store/android/`. |
+| `platforms.android.min_version` | yes | Lowest API level, as an integer, for example `26`. |
+| `platforms.android.screenshots` | yes | `phone` (at least two), optionally `tablet_7` and `tablet_10`. |
+| `platforms.android.settings.target_version` | no | API level built for. Default: the newest level the store accepts. |
+| `platforms.android.settings.feature_graphic` | no | 1024 by 500 pixels, in `assets/store/android/`. |
 
 #### iOS
 
-Used by `mobile-app` projects that ship to the App Store.
+For `mobile-app` projects shipped to the App Store.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `platforms.ios.min_version` | yes | Lowest iOS version the app runs on, as a string, for example `"16.0"`. |
-| `platforms.ios.permissions` | when the app asks for a permission | Each `name` is an `Info.plist` usage-description key, for example `NSCameraUsageDescription`. |
+| `platforms.ios.min_version` | yes | Lowest iOS version, as a string, for example `"16.0"`. |
+| `platforms.ios.permissions` | when the app asks for one | `name` is an `Info.plist` key, for example `NSCameraUsageDescription`. |
 | `platforms.ios.screenshots` | yes | Device classes `iphone_6_9` and `ipad_13`, each with paths. |
-| `platforms.ios.settings.sku` | no | Identifier for App Store Connect. When missing, the top-level `identifier` is used. |
-| `platforms.ios.settings.primary_category` | yes | App Store category, for example `Utilities`. |
-| `platforms.ios.settings.secondary_category` | no | Second App Store category. |
-| `platforms.ios.settings.copyright` | no | Copyright line. When missing, the owner's name and the current year are used. |
-
-The app icon for iOS is 1024 by 1024 pixels, in `assets/logo/` or `assets/icons/`.
+| `platforms.ios.settings.sku` | no | App Store Connect identifier. Default: the iOS `identifier`. |
 
 #### Store listing
 
-Store text is taken from the app fields. A store entry is written only when a store needs different text. Store overrides go under `store`, one entry per field, each with a language map.
+Store text comes from the app fields. Write a store entry only when a store needs different text, under `store`, one entry per field, each a language map.
 
 | Store text | Taken from | Android file | iOS file | Limit (characters) |
 | --- | --- | --- | --- | --- |
-| `title` | `display_name` | `title.txt` | `name.txt` | 30 (Play title not confirmed) |
+| `title` | `display_name` | `title.txt` | `name.txt` | 30 |
 | `short_description` | `summary` | `short_description.txt` | not used | 80 |
 | `description` | `description` | `full_description.txt` | `description.txt` | 4000 |
 | `subtitle` | `store.subtitle` only | not used | `subtitle.txt` | 30 |
-| `keywords` | `store.keywords` only | not used | `keywords.txt` | 100 (bytes or characters not confirmed) |
+| `keywords` | `store.keywords` only | not used | `keywords.txt` | 100 (bytes or characters: not confirmed) |
 | `promotional_text` | `store.promotional_text` only | not used | `promotional_text.txt` | 170 |
-| `release_notes` | `store.release_notes` only | `release_notes.txt` | `release_notes.txt` | 500 on Android, 4000 on iOS (not confirmed) |
+| `release_notes` | `store.release_notes` only | `release_notes.txt` | `release_notes.txt` | 500 Android, 4000 iOS (not confirmed) |
 
 ```yaml
 display_name:
@@ -302,32 +300,30 @@ store:
     en: Halloween countdown timer
 ```
 
-- Every language in `languages` needs a `display_name`, a `summary`, and a `description` for every mobile platform.
-- A store override naming a language that is not in `languages` is an error.
-- Confirmed against the stores' own pages: Google Play short description 80 and full description 4000; App Store name 30, subtitle 30, description 4000 and promotional text 170.
-- Not confirmed: the Google Play title (30 in third-party guides, 50 in one), the release-notes limits, and the iOS keywords limit (100, given as bytes in one source and characters in another). Confirm these in the consoles before a submission.
-- The script writes these files into `metadata/<platform>/<language>/`, and `settings.json` for each platform with its defaults applied.
+- Every language in `languages` needs `display_name`, `summary` and `description` for each mobile platform.
+- A store override for a language not in `languages` is an error.
+- Confirmed limits: Google Play title 30, short description 80, full description 4000; App Store name 30, subtitle 30, description 4000, promotional text 170.
+- Unconfirmed: release-notes limits, iOS keywords (100). Confirm in the consoles before submitting.
 
 #### Compliance
 
-Answers that the store forms ask for, so they are filled in from this file and kept in one place. The checker requires `pricing` and `content_rating` for every mobile app, `target_audience` and `data_safety` for Android, and `export_compliance.uses_encryption` for iOS.
+Store form answers, kept in one place.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `compliance.pricing` | yes | `free` or `paid`. |
-| `compliance.export_compliance.uses_encryption` | yes, for iOS | `true` or `false`. |
-| `compliance.content_rating` | yes | Answers to the content questionnaire. Each key is a question, each value is the answer. |
-| `compliance.target_audience` | yes, for Google Play | Audiences the app is made for, for example `all ages`. |
-| `compliance.data_safety` | yes, for Google Play | `collects`, `shares` and `deletion_request_url`, as the Play data-safety form asks. |
-| `privacy_policy` (top level) | yes, for Android and iOS | Absolute URL of the privacy policy. |
+| `compliance.pricing` | mobile apps | `free` or `paid`. |
+| `compliance.export_compliance.uses_encryption` | iOS | `true` or `false`. |
+| `compliance.content_rating` | mobile apps | Each key is a questionnaire question, each value the answer: `true`, `false` or a word such as `none`. |
+| `compliance.target_audience` | Google Play | Audiences, for example `all ages`. |
+| `compliance.data_safety` | Google Play | `collects`, `shares` and `deletion_request_url`, as the Play form asks. |
 
 #### Type notes
 
 - **`web-app`**: requires `url`, `languages`, `default_language`, `social_card`, `platforms: web`.
-- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios`, or both), `display_name`, `summary`, `description`, `privacy_policy`, and `compliance`. Each platform in `platforms` has its `min_version`.
-- **`desktop-app`**: requires `platforms` and `icon`. Platform builds are attached to the Release (see Desktop app).
-- **`browser-extension`** and **`firefox-extension`**: require `platforms` (`chromium` or `firefox`) and a store in `distribution`. The `manifest.json` holds the version, name and icons.
-- **Doc projects** (`guide`, `cookbook`, `style-guide`, `conventions`, `agreement`): require `languages`, `default_language`, `audience`, `entry_point` (inside `content/`, which must exist) and `platforms` (usually `web`).
+- **`mobile-app`**: requires `identifier`, `platforms` (`android`, `ios` or both), `display_name`, `summary`, `description`, `privacy_policy`, `compliance`, and `min_version` on each platform.
+- **`desktop-app`**: requires `platforms` and `icon`.
+- **`browser-extension`** and **`firefox-extension`**: require `platforms.chromium` or `platforms.firefox` respectively, with a store in its `distribution`. `manifest.json` holds the version, name and icons.
+- **Doc projects**: require `languages`, `default_language`, `audience` and `entry_point`; `platforms: web` when published as a site.
 
 #### What reads the manifest
 
@@ -336,27 +332,12 @@ Answers that the store forms ask for, so they are filled in from this file and k
 | Web app manifest (`manifest.webmanifest`) | `display_name`, `short_name`, `summary`, `languages`, `icon` |
 | Page metadata and JSON-LD | `display_name`, `summary`, `url`, `languages`, `default_language`, `social_card`, `license` from `package.json` |
 | Language switcher | `languages`, `default_language`, `rtl_languages` |
-| Tertium site | `display_name`, `summary`, `type`, `frameworks`, `code_languages`, `categories` |
-| Store metadata (`metadata/`, written by `scripts/manifest`) | `display_name`, `summary`, `description`, `store`, `languages`, `platforms`, `privacy_policy` |
+| Store metadata (generated) | `display_name`, `summary`, `description`, `store`, `languages`, `platforms`, `privacy_policy` |
 | Store listings | `display_name`, `summary`, `categories`, `privacy_policy`, `data_collected`, `age_rating`, `screenshots` |
-
-#### Generators
-
-`scripts/manifest/generate.ts` writes the JSON manifests from `project.yml`, with `package.json` beside it for the version, licence and repository.
-
-| Platform | Output | Notes |
-| --- | --- | --- |
-| `web` | `manifest.webmanifest` | Icon sizes are read from the PNG header. SVG icons use `any`. |
-| `chromium` | `manifest.json` (Manifest V3) | Icon `128` only. Other sizes are a build step. |
-| `firefox` | `manifest.json` | `browser_specific_settings.gecko.id` is the platform identifier. |
-| `vscode` | `package.json` | `publisher` and `engines.vscode` come from the platform settings. |
-| `npm` | `package.json` | `name` comes from the platform settings, or the package's own name. |
-
-Not generated yet: Android (`AndroidManifest.xml`, adaptive icons, `strings.xml`), iOS (`Info.plist`, asset catalogue), macOS (`Info.plist`, entitlements), Windows (`AppxManifest.xml`), and Linux (AppStream metainfo, Flatpak manifest). These formats need XML or plist writers and their own tests.
 
 #### Mapping
 
-Each row shows where a field goes in each native manifest. A generator uses this table. Each cell is written from the native documentation and must be confirmed before a generator relies on it. Empty cells mean the format has no such field.
+Where each field goes in each native manifest or store form. Each cell must be confirmed from the native documentation before a generator relies on it. Empty cells: the format has no such field.
 
 | Field | Android | iOS | Web manifest | Chromium / Firefox | macOS | Windows (MSIX) | Linux (AppStream) | VS Code / npm |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -377,64 +358,41 @@ Each row shows where a field goes in each native manifest. A generator uses this
 | `url` | | marketing URL | | `homepage_url` | | | `url` | `homepage` (npm) |
 | `support` | support URL | support URL | | | | | | `bugs` (npm) |
 | `privacy_policy` | privacy policy URL | privacy policy URL | | | | | | |
-| `categories` | category | `LSApplicationCategoryType` | | | `LSApplicationCategoryType` | | `categories` | `categories` |
-| `keywords` | | keywords (store) | | | | | `keywords` | `keywords` |
+| `categories` | category | primary and secondary category (App Store Connect) | | | `LSApplicationCategoryType` | | `categories` | `categories` |
+| `keywords` | | | | | | | `keywords` | `keywords` |
 | `data_collected` | data safety form | privacy labels | | | | | | |
 | `deep_links` | app links (`assetlinks.json`) | universal links, URL schemes | | | URL types | protocol activation | | |
 | `team` (owner) | | | | `author` | | publisher name | `developer` | `author` (npm) |
 | `license` | | | | | | | `project_license` | `license` |
 | `engines` | | | | | | | | `engines` (npm) |
 
-The category names in the store columns are not confirmed. Google Play's list of categories and Apple's `LSApplicationCategoryType` values for `utilities` and `social-networking` were not found in the review, so the generator's category table must be checked in each console before a release.
+Each store names its categories its own way (Google Play `TOOLS`, App Store `Utilities`, macOS `public.app-category.utilities`). Check each `categories` value against the store's list before a release. iOS keywords come from `store.keywords` (see Store listing).
 
-The `version` and `license` values come from the ecosystem file (`package.json`, `manifest.json`). The build number, `versionCode`, and the MSIX four-part version are set at build time, not stored here.
+`version`, `license` and `engines` come from the ecosystem file. Build numbers (`versionCode`, the MSIX four-part version) are set at build time.
 
 ### Repository metadata
 
 - **Description**: one sentence, up to 120 characters.
-- **Topics**: used for discovery on GitHub. The project type belongs in `project.yml`, not in topics.
-- **Website**: the homepage URL, when the project has one.
-- **Language**: GitHub detects it. A documentation repository that contains code samples marks them in `.gitattributes`, for example `*.php linguist-documentation`.
-
-### Missing attributes
-
-A project that lacks a required file or attribute gets a GitHub issue labelled `convention-todo`, titled with the missing item, for example `Add LICENSE file`. Close the issue when the item is added.
+- **Topics**: for discovery. The project type belongs in `project.yml`, not in topics.
+- **Website**: the homepage URL, when there is one.
+- **Language**: GitHub detects it. Code samples in a documentation repository are marked in `.gitattributes`, for example `*.php linguist-documentation`.
 
 ### Names
-
-Every project has three names:
 
 | Name | Form | Example | Used for |
 | --- | --- | --- | --- |
 | Repository name | Lowercase, hyphenated | `portal-commander-file-manager-community` | GitHub URL, folder name, release tags |
-| Display name | Proper name, with capitals and spaces | `Portal Commander` | README title, documentation |
-| Short name | One word, lowercase, optional | `hlpr` | Command names, mentions in text |
+| Display name | Capitals and spaces | `Portal Commander` | README title, documentation |
+| Short name | One word, lowercase, optional | `pumpkin` | Command names, mentions |
 
-- The display name is the first heading of `README.md`. A scoped npm package keeps its scope, for example `@tertium/hlpr`.
-- A CLI tool's short name is also its command name.
-- Do not use a short name that is already another project's command or package.
+- The display name is the first heading of `README.md`. A scoped npm package keeps its scope: `@tertium/pumpkin`.
+- A CLI tool's short name is its command name. Do not reuse another project's command or package name.
 
 ### Licence
 
-- Open-source projects use the MIT licence unless there is a reason for another. The `LICENSE` file is required.
-- A project with its own terms (for example, personal-use only) names those terms in `LICENSE`.
-- Creative assets such as sticker packs can use CC BY 4.0, with attribution in the README.
-
-### Example: Tertium site
-
-The Tertium site lists and links projects from their repositories. It reads these fields:
-
-| Site field | Source |
-| --- | --- |
-| Display name | First heading of `README.md` |
-| Description | GitHub description |
-| Repository name | GitHub repository name (URLs, folders) |
-| Type | `type` in `project.yml` |
-| Language and frameworks | `language` (or GitHub's language), `frameworks` in `project.yml` |
-| Icon | Language icon, or the Markdown icon for `documentation` topics; sticker packs use their first sticker |
-| Version and date | Latest `vX.Y.Z` tag and its commit date |
-| Downloads | GitHub Releases |
-| Changelog | `CHANGELOG.md` |
+- Open-source projects use MIT unless there is a reason for another. `LICENSE` is required.
+- Projects with their own terms (for example, personal use only) state them in `LICENSE`.
+- Creative assets, such as sticker packs, can use CC BY 4.0, with attribution in the description.
 
 ---
 
@@ -442,123 +400,102 @@ The Tertium site lists and links projects from their repositories. It reads thes
 
 For `guide`, `cookbook`, `style-guide`, `conventions` and `agreement`. The Markdown files are the product.
 
-- `content/` holds the documentation that the project delivers, organised by topic. Its Markdown files are written for readers.
-- A doc project with no product documentation beyond its README has no `content/` folder.
+- `content/` holds the documentation, organised by topic, written for readers.
+- A project whose whole product fits in `README.md` has no `content/`: the README holds the documentation in any sections it needs, and `entry_point` is `README.md`.
 - Links inside `content/` are relative to the file that contains them.
-- `language` is `Markdown` in `project.yml` when GitHub detects another language.
-- Do not add `src/` or `dist/` unless the project ships a generated artifact. A doc project has no release artifacts.
-
-#### Doc fields
+- No `src/` or `dist/` unless the project ships a tool or a generated artifact.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `audience` | yes | Who the document is for, as a list of short labels, for example `parents`, `developers`, `translators`. |
-| `entry_point` | yes | Path to the first page a reader opens, inside `content/`, for example `content/README.md`. The file must exist. |
-| `formats` | no | Formats the document is delivered in: `markdown`, `html`, `pdf`. |
-
-The checker also requires a `content/` folder next to `project.yml`.
+| `audience` | yes | Short labels, for example `parents`, `developers`, `translators`. |
+| `entry_point` | yes | First page a reader opens: a file inside `content/`, for example `content/README.md`, or `README.md` when there is no `content/`. The file must exist. |
+| `formats` | no | `markdown`, `html`, `pdf`. |
 
 ---
 
 ## Browser extension
 
-For `browser-extension` (Chromium) and `firefox-extension`. Applies to the extension itself. Store listing rules change, so check them before each submission.
+For `browser-extension` (Chromium) and `firefox-extension`. Store rules change, so check them before each submission.
 
-- The manifest is `manifest.json` at the root. Its `name`, `version` and `icons` must match the repository's version and icons.
-- Icons: `assets/icons/` holds the 16, 48 and 128 pixel PNG icons that the manifest references.
-- Store listing images go in `assets/store/<browser>/`, for example `assets/store/chrome/` or `assets/store/firefox/`.
-- The packaged extension (`.zip` for Chromium, `.xpi` for Firefox) is built into `dist/` and attached to the GitHub Release.
-- Permissions in `manifest.json` are kept to the minimum the extension needs. The README names each permission and its reason.
+- `manifest.json` at the root. Its `name`, `version` and `icons` match the repository.
+- `assets/icons/`: 16, 48 and 128 pixel PNGs referenced by the manifest.
+- `assets/store/<browser>/`: store listing images.
+- `dist/`: the packaged `.zip` (Chromium) or `.xpi` (Firefox), attached to the GitHub Release.
+- Permissions are the minimum the extension needs. `docs/PUBLISH.md` names each one and its reason.
 
 ---
 
 ## Web app
 
-For `web-app`. **This section is specific to web projects.** A desktop app does not have `public/`, a web manifest, a sitemap or a share image. The Desktop app section does not apply to web apps.
+For `web-app`. A web app has `public/`, a web manifest, a sitemap and a share image. Desktop and mobile rules do not apply.
 
 ### public/
 
-`public/` holds files that are served exactly as they are, from the site root. A file at `public/robots.txt` is served at `/robots.txt`. Build tools copy it into the output unchanged.
+`public/` holds files served as they are from the site root. `public/robots.txt` is served at `/robots.txt`.
 
-Typical contents:
+| File | Served at | Required | Purpose |
+| --- | --- | --- | --- |
+| `favicon.ico` | `/favicon.ico` | yes | Real icon file. Browsers request this path by default. |
+| `favicon.svg` | `/favicon.svg` | recommended | Scalable icon for modern browsers. |
+| `apple-touch-icon.png` | `/apple-touch-icon.png` | yes | 180 by 180 pixels, iOS home screen. |
+| `icons/icon-192.png`, `icons/icon-512.png` | `/icons/...` | yes | Referenced by the manifest. |
+| `manifest.webmanifest` | `/manifest.webmanifest` | yes | Name, colours, `display`, icons. |
+| `robots.txt` | `/robots.txt` | yes | Crawl rules and sitemap location. |
+| `social-card.png` | `/social-card.png` | yes | Share image, 1200 by 630 pixels. |
 
-| File | Served at | Purpose |
-| --- | --- | --- |
-| `favicon.ico` | `/favicon.ico` | Real icon file. Browsers request this path by default. |
-| `favicon.svg` | `/favicon.svg` | Scalable icon for modern browsers. |
-| `apple-touch-icon.png` | `/icons/apple-touch-icon.png` | 180 by 180 pixels, for iOS home screens. |
-| `icons/icon-192.png`, `icons/icon-512.png` | `/icons/...` | Icons referenced by the manifest. |
-| `manifest.webmanifest` | `/manifest.webmanifest` | Web app manifest: name, colours, `display`, and icons. |
-| `robots.txt` | `/robots.txt` | Crawl rules and the sitemap location. |
-| `social-card.png` | `/social-card.png` | Share image, 1200 by 630 pixels. |
-
-Rules:
-
-- A missing file must return a real 404 status. It must not return the app shell with status 200, because crawlers then index every unknown URL.
-- `robots.txt` and the sitemap are either static files in `public/` or generated routes. Their URLs are absolute `https` URLs (see Absolute URLs).
-- Icons and the manifest are linked from `<head>`: `<link rel="icon">`, `<link rel="apple-touch-icon">` and `<link rel="manifest">`.
-- `manifest.webmanifest` names the app, sets `display` to `standalone`, and sets `theme_color` and `background_color`. Its icons are the 192 and 512 pixel PNGs above.
+- A missing file returns a real 404, not the app shell with status 200. Crawlers would index every unknown URL.
+- `<head>` links `<link rel="icon">`, `<link rel="apple-touch-icon">` and `<link rel="manifest">`.
+- `manifest.webmanifest` sets `display` from `platforms.web.settings.display`, and `theme_color` and `background_color`.
 
 ### robots.txt
 
-- `User-agent: *`, `Allow: /` for a public site.
-- A `Sitemap:` line pointing to the sitemap, with the same absolute `https` origin as the pages.
-- Pages that are not for search (for example, personal content) are marked `noindex` in the page itself. `robots.txt` does not hide them, because a blocked page cannot be seen to carry `noindex`.
+- `User-agent: *` and `Allow: /` for a public site.
+- A `Sitemap:` line with the same absolute `https` origin as the pages.
+- Pages not meant for search are `noindex` in the page itself. `robots.txt` cannot hide them, since a blocked page cannot be seen to carry `noindex`.
 
 ### Absolute URLs
 
-- Canonical, `og:url`, `og:image` and `twitter:image` must be absolute `https://<host>/...` URLs.
-- Behind a reverse proxy the app sees plain `http`. Build the origin from the `X-Forwarded-Proto` header that the proxy sends, and use the request's own protocol only for local development.
+- Canonical, `og:url`, `og:image` and `twitter:image` are absolute `https` URLs built from `url` in `project.yml`, not from request headers, which clients can forge.
 
 ### Sitemap and languages
 
-- A multilingual site lists every language URL in `/sitemap.xml`. Each entry carries `xhtml:link` alternates for all languages, plus `x-default`.
-- Each page sets `<html lang>` to its language and has `hreflang` alternates and `x-default`.
-- `og:locale` is set for the page, with `og:locale:alternate` for the others.
+- `/sitemap.xml` lists every language URL, with `xhtml:link` alternates for all languages and `x-default`.
+- Each page sets `<html lang>`, has `hreflang` alternates and `x-default`, and sets `og:locale` with `og:locale:alternate` for the others.
 - Pages with personal content (for example, a card sent to someone) are `noindex,follow` and send `Referrer-Policy: no-referrer`.
 
-### Previews
+### Previews and structured data
 
-- `og:title`, `og:description`, `og:image` and `og:image:alt` are translated for each language. Use `twitter:card` set to `summary_large_image`.
-- Check the live page with the Facebook Sharing Debugger and Telegram's preview before calling it done.
-
-### Structured data
-
+- `og:title`, `og:description`, `og:image` and `og:image:alt` are translated per language. `twitter:card` is `summary_large_image`.
 - A JSON-LD block (`WebApplication`) with `inLanguage` on each language page.
+- Check the live page with the Facebook Sharing Debugger and Telegram's preview before calling it done.
 
 ---
 
 ## Mobile app
 
-For `mobile-app`: Android and iOS apps that ship through the stores. **This section is specific to mobile apps.** A web app follows the Web app section, and a desktop app follows the Desktop app section.
+For `mobile-app`: Android and iOS apps shipped through the stores. Web and desktop apps follow their own sections.
 
-- `identifier` is the reverse-DNS name of the app. It is the Android application ID and the iOS bundle ID, so it never changes after the first upload.
-- The store text, screenshot paths and compliance answers are in `project.yml`, under `store`, `platforms.android`, `platforms.ios` and `compliance` (see Project attributes). Do not type them into the store forms by hand.
-- Store builds (`.aab` for Google Play, `.ipa` for the App Store) are uploaded to the stores. They are not attached to the GitHub Release unless the project also publishes them directly.
-- Store images follow the Assets rules. Listing images go in `assets/store/android/` and `assets/store/ios/`.
+- `identifier` is the Android application ID and the iOS bundle ID.
+- Store text, screenshot paths and compliance answers live in `project.yml` (see Project attributes). Do not type them into store forms by hand.
+- Store builds (`.aab` for Google Play, `.ipa` for the App Store) go to the stores. They are attached to the GitHub Release only when the project publishes them directly.
+- Listing images: `assets/store/android/` and `assets/store/ios/`. Requirements are in Store assets.
+
+---
 
 ## Desktop app
 
-For `desktop-app`. Applies to native apps packaged per platform. Web apps do not follow this section.
+For `desktop-app`: native apps packaged per platform.
 
-- Platform builds are generated into `dist/` (`.exe`, `.msi`, `.dmg`, `.AppImage`, and so on). They are attached to the GitHub Release.
-- Store listing images go in `assets/store/<platform>/`, for example `assets/store/windows/`, `assets/store/macos/`, `assets/store/android/`.
-- The app icon is in `assets/icons/`, in the sizes each platform requires.
+- Platform builds in `dist/` (`.exe`, `.msi`, `.dmg`, `.AppImage`, and so on), attached to the GitHub Release.
+- Icon in `assets/icons/`, in the sizes each platform requires.
+- Listing images in `assets/store/<platform>/`, for example `assets/store/windows/`, `assets/store/macos/`. Requirements are in Store assets.
 
-### Publishing assets
+---
 
-Projects published to a store also need the store's assets. Check the store's current rules before submitting. The values below were checked when this guide was written.
+## Checking a project
 
-| Store | Asset | Requirement | Status |
-| --- | --- | --- | --- |
-| Microsoft Store (Windows) | Store logo | Listed as required in the submission FAQ and as optional on the listing page. Confirm in Partner Center. | Conflicting sources |
-| Microsoft Store (Windows) | Screenshots | PNG up to 50 MB, desktop at 1366 x 768 or larger. | Verified; counts conflict |
-| Microsoft Store (Windows) | Privacy policy URL | Required when the app collects or transmits personal information. | Verified |
-| Mac App Store (macOS) | App icon | 1024 x 1024 pixels. | Confirm in App Store Connect |
-| Mac App Store (macOS) | Screenshots | Not confirmed. | To verify |
-| Google Play (Android) | App icon | 512 x 512, 32-bit PNG with alpha, up to 1024 KB. | Verified by secondary sources |
-| Google Play (Android) | Feature graphic | 1024 x 500, JPEG or 24-bit PNG without alpha. | Verified |
-| Google Play (Android) | Screenshots | JPEG or 24-bit PNG without alpha, 320 to 3840 px, longest side at most twice the shortest. At least 2 required. | Partly verified |
+- `bunx project-convention check [projectPath]` checks `project.yml` and the required files, prints each problem and exits with 1 when there is one. It needs Bun.
+- It does not check image sizes, store text limits, README sections or the ecosystem manifest.
 
 ---
 

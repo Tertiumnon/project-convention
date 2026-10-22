@@ -1,9 +1,12 @@
 # Example project.yml for an iOS app. Placeholder names; see project--example.yml for every field.
 type: mobile-app
+slug: pumpkin-timer
 identifier: com.johndoe.pumpkintimer
 status: beta
 categories:
   - utilities
+  - lifestyle
+copyright: "© 2026 John Doe"
 display_name:
   en: Pumpkin Timer
 summary:
@@ -42,9 +45,6 @@ platforms:
       - app-store
     settings:
       sku: pumpkintimer-ios
-      primary_category: Utilities
-      secondary_category: Lifestyle
-      copyright: "© 2026 John Doe"
 store:
   subtitle:
     en: Halloween countdown timer
@@ -60,6 +60,6 @@ compliance:
     uses_encryption: false
   content_rating:
     violence: none
-    user_generated_content: no
+    user_generated_content: false
   target_audience:
     - all ages

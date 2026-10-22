@@ -1,6 +1,6 @@
 # Example project.yml for a doc project: a guide. Placeholder names; see project--example.yml for every field.
-# The checker needs content/ next to this file, with the entry point inside it.
 type: guide
+slug: pumpkin-timer-guide
 display_name:
   en: Pumpkin Timer Guide
 summary:
@@ -16,6 +16,7 @@ languages:
   - en
 default_language: en
 url: https://johndoe.example/pumpkin-timer/guide
+icon: assets/logo/logo.png
 audience:
   - parents
   - first-time carvers

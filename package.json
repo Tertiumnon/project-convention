@@ -2,14 +2,31 @@
   "name": "project-convention",
   "version": "0.1.0",
   "private": false,
+  "license": "MIT",
+  "author": "Vitalii Balabanov",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tertiumnon/project-convention.git"
   },
+  "type": "module",
+  "bin": {
+    "project-convention": "./src/cli/cli.ts"
+  },
+  "files": [
+    "src",
+    "!src/**/*.test.ts"
+  ],
   "scripts": {
+    "check": "bun src/cli/cli.ts check",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
     "release:patch": "gith release --patch",
     "release:minor": "gith release --minor",
     "release:major": "gith release --major",
     "version": "gith changelog"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3",
+    "typescript": "^7.0.2"
   }
 }

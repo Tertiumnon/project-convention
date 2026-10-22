@@ -1,3 +1,20 @@
 type: conventions
-publish_on:
+slug: project-convention
+display_name:
+  en: Project Structure Convention
+summary:
+  en: Standard layout, files and GitHub metadata for Tertium projects.
+languages:
+  - en
+default_language: en
+audience:
+  - developers
+entry_point: README.md
+icon: assets/logo/logo.svg
+team:
+  - name: Vitalii Balabanov
+    roles:
+      - owner
+    github: Tertiumnon
+listed_on:
   - https://tertiumnon.github.io

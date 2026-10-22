@@ -1,6 +1,6 @@
 # Example project.yml for a VS Code extension. Placeholder names; see project--example.yml for every field.
 type: vscode-extension
-identifier: com.johndoe.pumpkintimer
+slug: pumpkin-timer
 display_name:
   en: Pumpkin Timer
 summary:
@@ -18,6 +18,6 @@ team:
       - developer
 platforms:
   vscode:
+    min_version: "1.90.0"
     settings:
       publisher: johndoe
-      engine_vscode: "^1.90.0"

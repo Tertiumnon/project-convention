@@ -1,15 +1,19 @@
 # Example project.yml for a Chromium browser extension. Placeholder names; see project--example.yml for every field.
 type: browser-extension
-identifier: com.johndoe.pumpkintimer
+slug: pumpkin-timer
 display_name:
   en: Pumpkin Timer
 summary:
   en: A countdown timer for carving pumpkins, as a browser extension.
+description:
+  en: |
+    Pumpkin Timer sits in the toolbar and counts down while you carve.
+    Start a timer with one click and get a notification when it ends.
 languages:
   - en
 default_language: en
 url: https://johndoe.example/pumpkin-timer
-icon: assets/icons/icon-128.png
+icon: assets/logo/logo.png
 data_collected: none
 team:
   - name: John Doe
@@ -18,10 +22,13 @@ team:
       - developer
 platforms:
   chromium:
+    min_version: "120"
+    screenshots:
+      desktop:
+        - docs/screenshots/chromium/01-timer.png
     distribution:
       - chrome-web-store
     settings:
       manifest_version: 3
-      minimum_chrome_version: "120"
       host_permissions:
         - https://pumpkin-timer.johndoe.example/*

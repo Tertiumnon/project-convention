@@ -1,5 +1,6 @@
 # Example project.yml for an Android app. Placeholder names; see project--example.yml for every field.
 type: mobile-app
+slug: pumpkin-timer
 identifier: com.johndoe.pumpkintimer
 status: beta
 categories:
@@ -40,8 +41,6 @@ platforms:
       - google-play
     settings:
       target_version: 35
-      version_code: 1
-      category: TOOLS
       feature_graphic: assets/store/android/feature-graphic.png
 store:
   release_notes:
@@ -50,7 +49,7 @@ compliance:
   pricing: free
   content_rating:
     violence: none
-    user_generated_content: no
+    user_generated_content: false
   target_audience:
     - all ages
   data_safety:

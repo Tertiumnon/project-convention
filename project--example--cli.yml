@@ -1,5 +1,6 @@
 # Example project.yml for a command-line tool. Placeholder names; see project--example.yml for every field.
 type: cli
+slug: pumpkin-timer-cli
 identifier: com.johndoe.pumpkintimer
 short_name: pumpkin
 display_name:
@@ -20,9 +21,7 @@ default_language: en
 url: https://johndoe.example/pumpkin-timer
 support: https://github.com/johndoe/pumpkin-timer/issues
 documentation: https://github.com/johndoe/pumpkin-timer#readme
-engines:
-  - node >=24
-  - bun
+icon: assets/logo/logo.png
 data_collected: none
 team:
   - name: John Doe
