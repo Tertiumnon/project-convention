@@ -1,5 +1,5 @@
 // Rules copied from README.md. Change them in the same commit as the spec.
-export const projectTypes = ['cli', 'library', 'web-app', 'mobile-app', 'desktop-app', 'browser-extension', 'firefox-extension', 'vscode-extension', 'npm-package', 'telegram-sticker-pack', 'cookbook', 'guide', 'style-guide', 'conventions', 'icon-set', 'css-library', 'code-generator', 'agreement']
+export const projectTypes = ['cli', 'library', 'web-app', 'mobile-app', 'desktop-app', 'browser-extension', 'firefox-extension', 'vscode-extension', 'npm-package', 'telegram-sticker-pack', 'cookbook', 'guide', 'style-guide', 'conventions', 'icon-set', 'css-library', 'code-generator', 'agreement', 'service']
 export const docTypes = ['guide', 'cookbook', 'style-guide', 'conventions', 'agreement']
 
 export const fields = [
@@ -33,6 +33,7 @@ export const stores = ['google-play', 'app-store', 'chrome-web-store', 'firefox-
 export const commonFiles = ['README.md', 'LICENSE', 'CHANGELOG.md', '.gitignore']
 export const docsFiles = ['docs/INSTALL.md', 'docs/USAGE.md', 'docs/DEVELOPMENT.md', 'docs/PUBLISH.md']
 export const logoFiles = ['assets/logo/logo.svg', 'assets/logo/logo.png']
+export const noDocsTypes = [...docTypes, 'telegram-sticker-pack', 'icon-set']
 export const screenshotTypes = ['mobile-app', 'desktop-app', 'browser-extension']
 
 export const slugPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/

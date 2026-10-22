@@ -11,7 +11,7 @@ Read **Common** and your type's section. The type is `type` in `project.yml`:
 - [Web app](#web-app): `web-app`
 - [Mobile app](#mobile-app): `mobile-app`
 - [Desktop app](#desktop-app): `desktop-app`
-- Others (`cli`, `library`, `npm-package`, `vscode-extension`, `telegram-sticker-pack`, `icon-set`, `css-library`, `code-generator`): Common only, plus the assets that match their kind.
+- Others (`cli`, `library`, `npm-package`, `vscode-extension`, `telegram-sticker-pack`, `icon-set`, `css-library`, `code-generator`, `service`): Common only, plus the assets that match their kind.
 
 ---
 
@@ -27,10 +27,10 @@ Read **Common** and your type's section. The type is `type` in `project.yml`:
 | `project.yml` | yes | Project attributes. See Project attributes. |
 | `.gitignore` | yes | Ignores `build/` and `dist/`. |
 | Ecosystem manifest (`package.json`, `Cargo.toml`, `manifest.json`, ...) | yes | Version, licence, repository and the tool's own settings. |
-| `docs/INSTALL.md` | yes, except doc projects | Installing, or building from source, with requirements. |
-| `docs/USAGE.md` | yes, except doc projects | Commands, options, screens and workflows. |
-| `docs/DEVELOPMENT.md` | yes, except doc projects | Scripts, tests, project layout and contributor notes. |
-| `docs/PUBLISH.md` | yes, except doc projects | Releasing and publishing, store listing and review details, permission reasons. |
+| `docs/INSTALL.md` | yes, except doc projects, sticker packs and icon sets | Installing, or building from source, with requirements. |
+| `docs/USAGE.md` | yes, except doc projects, sticker packs and icon sets | Commands, options, screens and workflows. |
+| `docs/DEVELOPMENT.md` | yes, except doc projects, sticker packs and icon sets | Scripts, tests, project layout and contributor notes. |
+| `docs/PUBLISH.md` | yes, except doc projects, sticker packs and icon sets | Releasing and publishing, store listing and review details, permission reasons. |
 | `docs/screenshots/NN-short-name.png` | yes for `mobile-app`, `desktop-app`, `browser-extension`; recommended otherwise | Screenshots. See Screenshots and social preview. |
 | `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md` | no | Only when the project has them. |
 | Other `docs/*.md` | no | Architecture, decisions. Working notes for developers and agents, not product documentation. |
@@ -143,7 +143,7 @@ Required means required for every project unless the type notes say otherwise.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `type` | yes | One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`. |
+| `type` | yes | One of: `cli`, `library`, `web-app`, `mobile-app`, `desktop-app`, `browser-extension`, `firefox-extension`, `vscode-extension`, `npm-package`, `telegram-sticker-pack`, `cookbook`, `guide`, `style-guide`, `conventions`, `icon-set`, `css-library`, `code-generator`, `agreement`, `service` (a backend API or server). |
 | `slug` | yes | Lowercase, hyphenated ID, unique among the owner's projects, for example `pumpkin-timer`. Catalogues use it in URLs. Usually the repository name. Never changes once listed. |
 | `identifier` | with an installed platform (`android`, `ios`, `windows`, `macos`, `linux`, `firefox`), unless each sets its own | Reverse-DNS name, for example `com.tertium.pumpkintimer`. Default for every platform; a platform can override it with `platforms.<id>.identifier`. Use a domain the team owns; GitHub projects use `io.github.<owner>.<app>`, which Flathub accepts. Fix it before the first store upload: Android and iOS identifiers cannot change later. |
 | `display_name` | yes | Map of language to the name people see: store title and README title. |
@@ -156,7 +156,7 @@ Required means required for every project unless the type notes say otherwise.
 | `copyright` | no | For example `© 2026 Tertium`. Used by iOS, macOS and Windows; the App Store takes it as its copyright line. Not localized. |
 | `language` | no | Only when GitHub's detected language is wrong, for example `Markdown`. |
 
-Text fields are language maps with the same keys as `languages`, even with one language: `display_name: { en: Pumpkin Timer }`.
+Each field appears once. Text fields are language maps with the same keys as `languages`, even with one language: `display_name: { en: Pumpkin Timer }`.
 
 #### Languages
 

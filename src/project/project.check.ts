@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import {
-  baseFields, channels, commonFiles, docsFiles, docTypes, fields, firefoxIdPattern, installedPlatforms, logoFiles,
+  baseFields, channels, commonFiles, docsFiles, fields, firefoxIdPattern, installedPlatforms, logoFiles, noDocsTypes,
   platformIds, projectTypes, roles, screenshotTypes, slugPattern, stores, textFields, typeFields,
 } from './project.constants'
 
@@ -20,12 +20,22 @@ const has = (manifest: Manifest, keyPath: string): boolean => {
   return true
 }
 
-export const readManifest = (dir: string): Manifest => {
+const readManifestText = (dir: string): string => {
   const file = path.join(dir, 'project.yml')
   if (!fs.existsSync(file)) throw new Error(`Missing ${file} - add project.yml at the project root`)
-  const manifest: unknown = Bun.YAML.parse(fs.readFileSync(file, 'utf8'))
-  if (!isObject(manifest)) throw new Error(`${file} must be a YAML mapping of fields`)
+  return fs.readFileSync(file, 'utf8')
+}
+
+const parseManifest = (text: string): Manifest => {
+  const manifest: unknown = Bun.YAML.parse(text)
+  if (!isObject(manifest)) throw new Error('project.yml must be a YAML mapping of fields')
   return manifest
+}
+
+// The YAML parser keeps the last of two equal keys without a warning, so repeats are found in the text.
+const checkDuplicates = (text: string): string[] => {
+  const keys = [...text.matchAll(/^([A-Za-z_][\w-]*):/gm)].map(match => match[1])
+  return [...new Set(keys.filter((key, index) => keys.indexOf(key) !== index))].map(key => `Duplicate field ${key} - keep one`)
 }
 
 const checkFields = (manifest: Manifest): string[] => {
@@ -90,7 +100,7 @@ const checkFiles = (dir: string, manifest: Manifest): string[] => {
   const type = String(manifest.type)
   const files = [
     ...commonFiles,
-    ...(docTypes.includes(type) ? [] : docsFiles),
+    ...(noDocsTypes.includes(type) ? [] : docsFiles),
     ...(screenshotTypes.includes(type) ? ['docs/screenshots'] : []),
     ...[manifest.icon, manifest.entry_point].filter(file => typeof file === 'string'),
   ]
@@ -100,6 +110,7 @@ const checkFiles = (dir: string, manifest: Manifest): string[] => {
 }
 
 export const checkProject = (dir: string): string[] => {
-  const manifest = readManifest(dir)
-  return [...checkFields(manifest), ...checkLanguages(manifest), ...checkTeam(manifest.team), ...checkPlatforms(manifest), ...checkFiles(dir, manifest)]
+  const text = readManifestText(dir)
+  const manifest = parseManifest(text)
+  return [...checkDuplicates(text), ...checkFields(manifest), ...checkLanguages(manifest), ...checkTeam(manifest.team), ...checkPlatforms(manifest), ...checkFiles(dir, manifest)]
 }

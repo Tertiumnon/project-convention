@@ -98,6 +98,19 @@ describe('project check', () => {
     expect(checkProject(createProject(manifest))).toEqual(['Missing identifier for platform windows - set identifier or platforms.windows.identifier'])
   })
 
+  test('reports a field written twice', () => {
+    expect(checkProject(createProject(`${validManifest}slug: again\n`))).toEqual(['Duplicate field slug - keep one'])
+  })
+
+  test('services are a known type and sticker packs need no docs files', () => {
+    const files = ['README.md', 'LICENSE', 'CHANGELOG.md', '.gitignore', 'assets/logo/logo.svg']
+    const manifest = (type: string): string => validManifest.replace('type: conventions', `type: ${type}`).replace(/audience:\n {2}- developers\nentry_point: README.md\n/, '')
+    expect(checkProject(createProject(manifest('telegram-sticker-pack'), files))).toEqual([])
+    expect(checkProject(createProject(manifest('service'), files))).toEqual([
+      'Missing file docs/INSTALL.md', 'Missing file docs/USAGE.md', 'Missing file docs/DEVELOPMENT.md', 'Missing file docs/PUBLISH.md',
+    ])
+  })
+
   test('fails fast without project.yml', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hlpr-project-check-'))
     dirs.push(dir)
